@@ -1,6 +1,9 @@
 FROM cismet/cids-integration-base
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
+ENV LIB_DIR ${DATA_DIR}/lib
+ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
+ENV DUMPS_DIR ${IMPORT_DIR}/cids-java-maven
 ENV JAVA_VERSION 8
 ENV JAVA_UPDATE 77
 ENV JAVA_BUILD 03
@@ -34,3 +37,16 @@ RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 
 RUN update-alternatives --install "/usr/bin/javac" "javac" "${JAVA_HOME}/bin/javac" 1
 RUN update-alternatives --set java "${JRE_HOME}/bin/java"
 RUN update-alternatives --set javac "${JAVA_HOME}/bin/javac"
+
+RUN apt-get update \
+  && apt-get install -y postgresql-client \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p $MAVEN_LIB_DIR
+RUN mkdir -p $MAVEN_LIB_DIR/m2/javax/servlet/jsp/jsp-api/2.1.2
+COPY jsp-api-2.1.2.pom $MAVEN_LIB_DIR/m2/javax/servlet/jsp/jsp-api/2.1.2/
+
+
+CMD \
+  echo '###### BUILD DISTRIBUTION ######' && \
+  cp ${IMPORT_DIR}/settings.xml ${DATA_DIR}/
