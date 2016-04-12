@@ -10,14 +10,16 @@ ENV LIB_DIR ${DATA_DIR}/lib
 ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
 ENV CIDS_SERVER_DIR ${DATA_DIR}/cids-server
 
-RUN mkdir -p ${DATA_DIR}/
-RUN mkdir -p ${LIB_DIR}/
-RUN mkdir -p ${CIDS_SERVER_DIR}/
-RUN mkdir -p ${IMPORT_DIR}/
+# change this when creating container: set same CIDS_ACCOUNT_EXTENSION as in pom.xml
+ENV CIDS_ACCOUNT_EXTENSION CidsReference
+
+RUN mkdir -p ${SERVER_INIT_DIR}
+RUN mkdir -p ${MAVEN_LIB_DIR}
+RUN mkdir -p ${CIDS_SERVER_DIR}
 
 WORKDIR ${DATA_DIR}/
 
-VOLUME ${DATA_DIR}
+#VOLUME ${DATA_DIR}
 
 EXPOSE 9986
 

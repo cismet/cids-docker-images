@@ -42,8 +42,7 @@ RUN apt-get update \
   && apt-get install -y postgresql-client \
   && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p $MAVEN_LIB_DIR
-RUN mkdir -p $MAVEN_LIB_DIR/m2/javax/servlet/jsp/jsp-api/2.1.2
-COPY jsp-api-2.1.2.pom $MAVEN_LIB_DIR/m2/javax/servlet/jsp/jsp-api/2.1.2/
+RUN mkdir -p ${MAVEN_LIB_DIR}/javax/servlet/jsp/jsp-api/2.1.2
+COPY jsp-api-2.1.2.pom $MAVEN_LIB_DIR/javax/servlet/jsp/jsp-api/2.1.2/
 
-VOLUME ${DATA_DIR}
+#VOLUME ${DATA_DIR}

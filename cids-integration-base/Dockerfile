@@ -112,7 +112,7 @@ RUN rm -rf /var/lib/apt/lists/* src/*
 EXPOSE 5432
 
 # data
-VOLUME ${DATA_DIR}
+# VOLUME ${DATA_DIR}
 #It is important to do it in the right order, because the files inside the container 
 #are only copied to the volume by the first container that uses it (and the volume is still empty)
 
