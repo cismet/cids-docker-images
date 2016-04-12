@@ -4,8 +4,8 @@ MAINTAINER Jean-Michel Ruiz "jean.ruiz@cismet.de"
 
 # ENV
 ENV POSTGRES_PASSWORD postgres
-ENV IMPORT_DIR /import
 ENV DATA_DIR /data
+ENV IMPORT_DIR /import
 ENV POSTGRES_DIR ${DATA_DIR}/cids-integration-base
 # .sql files in the dumps folder are imported upon start -> docker-volumes
 ENV DUMPS_DIR ${IMPORT_DIR}/cids-integration-base
@@ -112,7 +112,7 @@ RUN rm -rf /var/lib/apt/lists/* src/*
 EXPOSE 5432
 
 # data
- VOLUME ${DATA_DIR}
+VOLUME ${DATA_DIR}
 #It is important to do it in the right order, because the files inside the container 
 #are only copied to the volume by the first container that uses it (and the volume is still empty)
 

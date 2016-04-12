@@ -1,9 +1,9 @@
 FROM cismet/cids-integration-base
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
+ENV DATA_DIR /data
 ENV LIB_DIR ${DATA_DIR}/lib
 ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
-ENV DUMPS_DIR ${IMPORT_DIR}/cids-java-maven
 ENV JAVA_VERSION 8
 ENV JAVA_UPDATE 77
 ENV JAVA_BUILD 03
@@ -46,7 +46,4 @@ RUN mkdir -p $MAVEN_LIB_DIR
 RUN mkdir -p $MAVEN_LIB_DIR/m2/javax/servlet/jsp/jsp-api/2.1.2
 COPY jsp-api-2.1.2.pom $MAVEN_LIB_DIR/m2/javax/servlet/jsp/jsp-api/2.1.2/
 
-
-CMD \
-  echo '###### BUILD DISTRIBUTION ######' && \
-  cp ${IMPORT_DIR}/settings.xml ${DATA_DIR}/
+VOLUME ${DATA_DIR}

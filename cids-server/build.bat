@@ -1,1 +1,1 @@
-docker build -t cismet/cids-integration-base:latest .
+docker build -t cismet/cids-server:latest .
