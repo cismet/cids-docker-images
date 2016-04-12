@@ -9,8 +9,6 @@ ENV LIB_DIR ${DATA_DIR}/lib
 ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
 ENV CIDS_SERVER_DIR ${DATA_DIR}/cids-server
 
-ENV starterCidsRef
-
 RUN mkdir -p ${DATA_DIR}/
 RUN mkdir -p ${LIB_DIR}/
 RUN mkdir -p ${CIDS_SERVER_DIR}/
