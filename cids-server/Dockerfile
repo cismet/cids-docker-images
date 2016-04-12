@@ -31,6 +31,6 @@ CMD \
   mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U && \
   echo '###### START LEGACY SERVER ######' && \
   cp ${SERVER_INIT_DIR}/runtime.properties ${CIDS_SERVER_DIR}/ && \
-  sed -i -- "s/__DB_HOST__/${DB_PORT_5432_TCP_ADDR}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
-  sed -i -- "s/__DB_PORT__/${DB_PORT_5432_TCP_PORT}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
+  sed -i -- "s/__DB_HOST__/${INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
+  sed -i -- "s/__DB_PORT__/${INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
   /usr/bin/java -Xms64m -Xmx800m -Djava.security.policy=policy.file -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-2.0-SNAPSHOT-starter.jar ${CIDS_SERVER_DIR}/runtime.properties
