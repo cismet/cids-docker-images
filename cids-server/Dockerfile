@@ -33,4 +33,4 @@ CMD \
   cp ${SERVER_INIT_DIR}/runtime.properties ${CIDS_SERVER_DIR}/ && \
   sed -i -- "s/__DB_HOST__/${DB_PORT_5432_TCP_ADDR}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
   sed -i -- "s/__DB_PORT__/${DB_PORT_5432_TCP_PORT}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
-  /usr/bin/java -Xms64m -Xmx800m -Djava.security.policy=policy.file -jar ${LIB_DIR}/starterCidsServer/cids-server-2.0-SNAPSHOT-starter.jar ${CIDS_SERVER_DIR}/runtime.properties
+  /usr/bin/java -Xms64m -Xmx800m -Djava.security.policy=policy.file -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-2.0-SNAPSHOT-starter.jar ${CIDS_SERVER_DIR}/runtime.properties
