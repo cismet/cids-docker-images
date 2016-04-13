@@ -36,6 +36,6 @@ CMD \
   sed -i -- "s/__CIDS_SERVER_HOST__/${CIDS_SERVER_PORT_9986_TCP_ADDR:-localhost}/g" ${CIDS_SERVER_REST_LEGACY_DIR}/runtime.properties && \
   sed -i -- "s/__CIDS_SERVER_PORT__/${CIDS_SERVER_PORT_9986_TCP_PORT:-9986}/g" ${CIDS_SERVER_REST_LEGACY_DIR}/runtime.properties && \
   cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/log4j.properties ${CIDS_SERVER_REST_LEGACY_DIR}/ && \
-  sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${CIDS_SERVER_DIR}/log4j.properties && \
-  sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${CIDS_SERVER_DIR}/log4j.properties && \
+  sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${CIDS_SERVER_REST_LEGACY_DIR}/log4j.properties && \
+  sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${CIDS_SERVER_REST_LEGACY_DIR}/log4j.properties && \
   /usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-rest-legacy-1.0-SNAPSHOT-starter.jar @runtime.properties

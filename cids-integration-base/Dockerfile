@@ -128,5 +128,4 @@ CMD \
     createdb -U postgres -T template_postgis ${DUMP_DB_NAME} && \
     psql -U postgres ${DUMP_DB_NAME} < ${DUMP_FULL_PATH}; \
   done && \
-  su postgres -c "pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} stop" && \
-  su postgres -c "postgres -D ${CIDS_INTEGRATION_BASE_DIR}"
+  echo '###### CIDS INTEGRATION BASE INITIALISED ######'
