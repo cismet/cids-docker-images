@@ -16,20 +16,20 @@ RUN mkdir -p ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}
 RUN mkdir -p ${MAVEN_LIB_DIR}
 RUN mkdir -p ${CIDS_SERVER_REST_LEGACY_DIR}
 
-COPY policy.file ${CIDS_SERVER_REST_LEGACY_DIR}/
-
 WORKDIR ${DATA_DIR}/
 
-#VOLUME ${DATA_DIR}
+VOLUME ${DATA_DIR}
 
 EXPOSE 8890
 
+# use volume from CIDS_SERVER: need to crete CIDS_SERVER_REST_LEGACY_DIR in RUN!
+
 CMD \
   echo '###### BUILD CIDS-SERVER-REST-LEGACY DISTRIBUTION ######' && \
-  cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/settings.xml ${CIDS_SERVER_REST_LEGACY_DIR}/ && \
+  mkdir -p ${CIDS_SERVER_REST_LEGACY_DIR} && \
   cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/pom.xml ${CIDS_SERVER_REST_LEGACY_DIR}/ && \
   cd ${CIDS_SERVER_REST_LEGACY_DIR} && \
-  mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${CIDS_SERVER_REST_LEGACY_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U && \
+  mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U && \
   echo '###### START CIDS-SERVER-REST-LEGACY SERVER ######' && \
   echo 'connecting to cids-server at '${CIDS_SERVER_PORT_9986_TCP_ADDR:-localhost}':'${CIDS_SERVER_PORT_9986_TCP_PORT:-9986} && \
   cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/runtime.properties ${CIDS_SERVER_REST_LEGACY_DIR}/ && \
@@ -38,4 +38,4 @@ CMD \
   cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/log4j.properties ${CIDS_SERVER_REST_LEGACY_DIR}/ && \
   sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${CIDS_SERVER_DIR}/log4j.properties && \
   sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${CIDS_SERVER_DIR}/log4j.properties && \
-  /usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=policy.file -Dlog4j.configuration=log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-rest-legacy-1.0-SNAPSHOT-starter.jar @runtime.properties
+  /usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-rest-legacy-1.0-SNAPSHOT-starter.jar @runtime.properties

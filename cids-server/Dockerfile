@@ -17,8 +17,6 @@ RUN mkdir -p ${CIDS_SERVER_IMPORT_DIR}
 RUN mkdir -p ${MAVEN_LIB_DIR}
 RUN mkdir -p ${CIDS_SERVER_DIR}
 
-COPY policy.file ${CIDS_SERVER_DIR}/
-
 WORKDIR ${DATA_DIR}/
 
 #VOLUME ${DATA_DIR}
@@ -27,16 +25,16 @@ EXPOSE 9986
 
 CMD \
   echo '###### BUILD CIDS-SERVER DISTRIBUTION ######' && \
-  cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${CIDS_SERVER_DIR}/ && \
+  cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/ && \
   cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/ && \
   cd ${CIDS_SERVER_DIR} && \
-  mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${CIDS_SERVER_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U && \
+  mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U && \
   echo '###### START LEGACY CIDS-SERVER ######' && \
-  echo 'connecting to cids Integration Base at '${INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432} && \
+  echo 'connecting to cids Integration Base at '${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432} && \
   cp ${CIDS_SERVER_IMPORT_DIR}/runtime.properties ${CIDS_SERVER_DIR}/ && \
-  sed -i -- "s/__DB_HOST__/${INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
-  sed -i -- "s/__DB_PORT__/${INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
+  sed -i -- "s/__DB_HOST__/${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
+  sed -i -- "s/__DB_PORT__/${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}/g" ${CIDS_SERVER_DIR}/runtime.properties && \
   cp ${CIDS_SERVER_IMPORT_DIR}/log4j.properties ${CIDS_SERVER_DIR}/ && \
   sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${CIDS_SERVER_DIR}/log4j.properties && \
   sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${CIDS_SERVER_DIR}/log4j.properties && \
-  /usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=policy.file -Dlog4j.configuration=log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-2.0-SNAPSHOT-starter.jar ${CIDS_SERVER_DIR}/runtime.properties
+  /usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-2.0-SNAPSHOT-starter.jar ${CIDS_SERVER_DIR}/runtime.properties

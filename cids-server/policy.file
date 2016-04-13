@@ -1,4 +1,0 @@
-grant {
-	// Allow everyone to everything
-	permission java.security.AllPermission;
-};

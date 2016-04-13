@@ -1,1 +1,0 @@
-docker build -t cismet/cids-server-rest:latest .
