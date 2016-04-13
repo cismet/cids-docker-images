@@ -1,4 +1,4 @@
-FROM cismet/cids-integration-base
+FROM ubuntu
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
 ENV DATA_DIR /data

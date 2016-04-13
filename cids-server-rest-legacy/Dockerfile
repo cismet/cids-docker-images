@@ -1,4 +1,4 @@
-FROM cismet/cids-server
+FROM cismet/cids-java-maven
 
 MAINTAINER Pascal Dihé <pascal.dihe@cismet.de>
 
@@ -7,7 +7,7 @@ ENV IMPORT_DIR /import
 ENV CIDS_SERVER_REST_LEGACY_IMPORT_DIR ${IMPORT_DIR}/cids-server-rest-legacy
 ENV LIB_DIR ${DATA_DIR}/lib
 ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
-ENV CIDS_SERVER_REST_LEGACY ${DATA_DIR}/cids-server-rest-legacy
+ENV CIDS_SERVER_REST_LEGACY_DIR ${DATA_DIR}/cids-server-rest-legacy
 
 # change this when creating container: set same CIDS_ACCOUNT_EXTENSION as in pom.xml
 ENV CIDS_ACCOUNT_EXTENSION CidsReference
