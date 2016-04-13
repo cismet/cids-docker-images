@@ -6,9 +6,9 @@ MAINTAINER Jean-Michel Ruiz "jean.ruiz@cismet.de"
 ENV POSTGRES_PASSWORD postgres
 ENV DATA_DIR /data
 ENV IMPORT_DIR /import
-ENV POSTGRES_DIR ${DATA_DIR}/cids-integration-base
+ENV CIDS_INTEGRATION_BASE_DIR ${DATA_DIR}/cids-integration-base
 # .sql files in the dumps folder are imported upon start -> docker-volumes
-ENV DUMPS_DIR ${IMPORT_DIR}/cids-integration-base
+ENV CIDS_INTEGRATION_BASE_IMPORT_DIR ${IMPORT_DIR}/cids-integration-base
 ENV PG_VERSION 9.0.3
 ENV GEOS_VERSION 3.3.5
 ENV PROJ4_VERSION 4.8.0
@@ -70,12 +70,12 @@ RUN mkdir -p ${DATA_DIR}
 # create common import directory
 RUN mkdir -p ${IMPORT_DIR}
 # create dumps directory
-RUN mkdir -p ${DUMPS_DIR}
+RUN mkdir -p ${CIDS_INTEGRATION_BASE_IMPORT_DIR}
 
 # create postgres data directory
-RUN mkdir -p ${POSTGRES_DIR}
-RUN chown postgres:postgres ${POSTGRES_DIR}
-RUN chmod 700 ${POSTGRES_DIR}
+RUN mkdir -p ${CIDS_INTEGRATION_BASE_DIR}
+RUN chown postgres:postgres ${CIDS_INTEGRATION_BASE_DIR}
+RUN chmod 700 ${CIDS_INTEGRATION_BASE_DIR}
 
 USER postgres
 # initdb
@@ -86,22 +86,22 @@ RUN initdb \
   --lc-monetary=${LOCALE}.${ENCODING} \
   --lc-numeric=${LOCALE}.${ENCODING} \
   --lc-time=${LOCALE}.${ENCODING} \
-  -D ${POSTGRES_DIR}
+  -D ${CIDS_INTEGRATION_BASE_DIR}
 
 USER root
 # conf
-RUN echo "host all all 0.0.0.0/0 md5" >> $POSTGRES_DIR/pg_hba.conf
-RUN echo "listen_addresses='*'" >> $POSTGRES_DIR/postgresql.conf
+RUN echo "host all all 0.0.0.0/0 md5" >> $CIDS_INTEGRATION_BASE_DIR/pg_hba.conf
+RUN echo "listen_addresses='*'" >> $CIDS_INTEGRATION_BASE_DIR/postgresql.conf
 
 USER postgres
-RUN pg_ctl -w -D ${POSTGRES_DIR} start \
+RUN pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start \
 # set password
   && psql -c "alter role postgres password '${POSTGRES_PASSWORD}'" \
   && createdb template_postgis \
 # postgis template
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/postgis/postgis.sql \
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/spatial_ref_sys.sql \
-  && pg_ctl -w -D ${POSTGRES_DIR} stop
+  && pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} stop
 
 USER root
 # clean up
@@ -118,13 +118,13 @@ EXPOSE 5432
 
 # start
 CMD \
-  su postgres -c "pg_ctl -w -D ${POSTGRES_DIR} start" && \
-  for DUMP_FULL_PATH in ${DUMPS_DIR}/*.sql; \
+  su postgres -c "pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start" && \
+  for DUMP_FULL_PATH in ${CIDS_INTEGRATION_BASE_IMPORT_DIR}/*.sql; \
   do DUMP_FILE=`basename ${DUMP_FULL_PATH}`; \
     DUMP_DB_NAME=${DUMP_FILE%%.sql}; \
     dropdb -U postgres ${DUMP_DB_NAME} 2> /dev/null; \
     createdb -U postgres -T template_postgis ${DUMP_DB_NAME} && \
     psql -U postgres ${DUMP_DB_NAME} < ${DUMP_FULL_PATH}; \
   done && \
-  su postgres -c "pg_ctl -w -D ${POSTGRES_DIR} stop" && \
-  su postgres -c "postgres -D ${POSTGRES_DIR}"
+  su postgres -c "pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} stop" && \
+  su postgres -c "postgres -D ${CIDS_INTEGRATION_BASE_DIR}"
