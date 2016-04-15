@@ -2,7 +2,7 @@ FROM cismet/cids-java-maven
 
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
-ENV POSTGRES_PASSWORD postgres
+ENV PGPASSWORD postgres
 ENV DATA_DIR /data
 ENV IMPORT_DIR /import
 ENV CIDS_SERVER_IMPORT_DIR ${IMPORT_DIR}/cids-server
@@ -24,11 +24,26 @@ WORKDIR ${DATA_DIR}/
 EXPOSE 9986
 
 CMD \
+  if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then && \
+      echo "You must link this container with a CIDS_INTEGRATION_BASE container first" && \
+      exit 1 && \
+  fi
   echo '###### BUILD CIDS-SERVER DISTRIBUTION ######' && \
   cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/ && \
   cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/ && \
   cd ${CIDS_SERVER_DIR} && \
   mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U && \
+  echo '###### CHECKING CONNECTION TO CIDS INTEGRATION BASE ######' && \
+  i=0 && \
+  while !eval "psql -h $CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR -U postgres -c \"CREATE TABLE isready (); COPY isready FROM '/tmp/isready.csv' DELIMITER ';' CSV HEADER\""; do && \
+      i=`expr $i + 1` && \
+      if [ $i -ge 5 ]; then && \
+          echo "$(date) - cids integration base container still not ready, giving up" && \
+          exit 1 && \
+      fi && \
+      echo "$(date) - waiting for cids integration base to be ready" && \
+      sleep 5000 && \
+  done && \
   echo '###### START LEGACY CIDS-SERVER ######' && \
   echo 'connecting to cids Integration Base at '${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432} && \
   cp ${CIDS_SERVER_IMPORT_DIR}/runtime.properties ${CIDS_SERVER_DIR}/ && \

@@ -120,6 +120,7 @@ VOLUME ${DATA_DIR}
 CMD \
   echo '###### INITIALISING CIDS INTEGRATION BASE ######' && \
   su postgres -c "pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start" && \
+  psql -U postgres -c "DROP TABLE isready" > /dev/null
   for DUMP_FULL_PATH in ${CIDS_INTEGRATION_BASE_IMPORT_DIR}/*.sql; \
   do DUMP_FILE=`basename ${DUMP_FULL_PATH}`; \
     DUMP_DB_NAME=${DUMP_FILE%%.sql}; \
@@ -129,4 +130,5 @@ CMD \
     psql -U postgres ${DUMP_DB_NAME} < ${DUMP_FULL_PATH}; \
   done && \
   su postgres -c "pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} stop -s -m fast" && \
+  touch /tmp/isready.csv  && \
   su postgres -c "postgres -D ${CIDS_INTEGRATION_BASE_DIR}"
