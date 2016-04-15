@@ -27,7 +27,7 @@ CMD \
   if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then && \
       echo "You must link this container with a CIDS_INTEGRATION_BASE container first" && \
       exit 1 && \
-  fi
+  fi && \
   echo '###### BUILD CIDS-SERVER DISTRIBUTION ######' && \
   cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/ && \
   cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/ && \

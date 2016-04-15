@@ -28,7 +28,7 @@ CMD \
   if test -z "${CIDS_SERVER_PORT_9986_TCP_ADDR}" -o -z "${CIDS_SERVER_PORT_9986_TCP_PORT}"; then && \
       echo "You must link this container with a CIDS-SERVER container first" && \
       exit 1 && \
-  fi
+  fi && \
   echo '###### BUILD CIDS-SERVER-REST-LEGACY DISTRIBUTION ######' && \
   mkdir -p ${CIDS_SERVER_REST_LEGACY_DIR} && \
   cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/pom.xml ${CIDS_SERVER_REST_LEGACY_DIR}/ && \
