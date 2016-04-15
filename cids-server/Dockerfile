@@ -26,9 +26,9 @@ EXPOSE 9986
 CMD \
   echo '###### CHECKING CIDS INTEGRATION BASE CONTAINER ######' && \
   if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then \
-      echo "You must link this container with a CIDS_INTEGRATION_BASE container first" \
-      exit 1 \
-  fi && \
+      echo "You must link this container with a CIDS_INTEGRATION_BASE container first" && \
+      exit 1 && \
+  fi \
   echo '###### BUILD CIDS-SERVER DISTRIBUTION ######' && \
   cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/ && \
   cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/ && \
@@ -42,11 +42,11 @@ CMD \
   while ! is_ready; do \
       i=`expr $i + 1` && \
       if [ $i -ge 5 ]; then \
-          echo "$(date) - cids integration base container still not ready, giving up" \
-          exit 1 \
+          echo "$(date) - cids integration base container still not ready, giving up" && \
+          exit 1 && \
       fi \
-      echo "$(date) - waiting for cids integration base to be ready" \
-      sleep 5000 \
+      echo "$(date) - waiting for cids integration base to be ready" && \
+      sleep 5000 && \
   done && \
   echo '###### START LEGACY CIDS-SERVER ######' && \
   echo 'connecting to cids Integration Base at '${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432} && \

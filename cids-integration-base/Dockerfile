@@ -120,10 +120,10 @@ VOLUME ${DATA_DIR}
 CMD \
   echo '###### INITIALISING CIDS INTEGRATION BASE ######' && \
   su postgres -c "pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start" && \
-  psql -U postgres -c "DROP TABLE isready" \
+  psql -U postgres -c "DROP TABLE isready" 2> /dev/null; \
   for DUMP_FULL_PATH in ${CIDS_INTEGRATION_BASE_IMPORT_DIR}/*.sql; \
   do DUMP_FILE=`basename ${DUMP_FULL_PATH}`; \
-    DUMP_DB_NAME=${DUMP_FILE%%.sql}; \
+    DUMP_DB_NAME=${DUMP_FILE%%.sql}; && \
     echo 'creating database '${DUMP_DB_NAME}' from file '${DUMP_FILE} && \
     dropdb -U postgres ${DUMP_DB_NAME} 2> /dev/null; \
     createdb -U postgres -T template_postgis ${DUMP_DB_NAME} && \
