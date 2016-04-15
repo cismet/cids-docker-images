@@ -40,7 +40,7 @@ CMD \
   } && \
   i=0 && \
   while ! is_ready; do \
-      i=`expr $i + 1` \
+      i=`expr $i + 1` && \
       if [ $i -ge 5 ]; then \
           echo "$(date) - cids integration base container still not ready, giving up" \
           exit 1 \
