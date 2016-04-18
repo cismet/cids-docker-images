@@ -44,5 +44,5 @@ RUN apt-get update \
 
 RUN mkdir -p ${MAVEN_LIB_DIR}/javax/servlet/jsp/jsp-api/2.1.2
 COPY jsp-api-2.1.2.pom $MAVEN_LIB_DIR/javax/servlet/jsp/jsp-api/2.1.2/
-
 COPY policy.file ${DATA_DIR}/
+COPY truststore.ks ${DATA_DIR}/
