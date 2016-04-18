@@ -6,13 +6,14 @@ if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATI
     exit 1
 fi
 echo '###### BUILD CIDS-SERVER DISTRIBUTION ######'
+mkdir -p ${CIDS_SERVER_DIR}
 cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/
 cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/
-cd ${CIDS_SERVER_DIR}
+cd ${CIDS_SERVER_DIR}/
 mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U
 echo '###### CHECKING CONNECTION TO CIDS INTEGRATION BASE ######'
 is_ready() {
-    eval "psql -h $CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR -U postgres -c \"CREATE TABLE isready (); COPY isready FROM '/tmp/isready.csv' DELIMITER ';' CSV HEADER\""
+    eval "psql -h $CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR -U postgres -c \"DROP TABLE IF EXISTS isready; CREATE TABLE isready (); COPY isready FROM '/tmp/isready.csv' DELIMITER ';' CSV HEADER\""
 }
 i=0
 while ! is_ready;
@@ -23,7 +24,7 @@ do
         exit 1
     fi
     echo "$(date) - waiting for cids integration base to be ready"
-    sleep 5000
+    sleep 5
 done
 echo '###### START LEGACY CIDS-SERVER ######'
 echo 'connecting to cids Integration Base at '${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}

@@ -8,7 +8,7 @@ fi
 echo '###### BUILD CIDS-SERVER-REST-LEGACY DISTRIBUTION ######'
 mkdir -p ${CIDS_SERVER_REST_LEGACY_DIR}
 cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/pom.xml ${CIDS_SERVER_REST_LEGACY_DIR}/
-cd ${CIDS_SERVER_REST_LEGACY_DIR}
+cd ${CIDS_SERVER_REST_LEGACY_DIR}/
 mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U
 echo '###### START CIDS-SERVER-REST-LEGACY SERVER ######'
 echo 'connecting to cids-server at '${CIDS_SERVER_PORT_9986_TCP_ADDR:-localhost}':'${CIDS_SERVER_PORT_9986_TCP_PORT:-9986}
