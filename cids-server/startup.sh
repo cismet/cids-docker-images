@@ -19,12 +19,12 @@ i=0
 while ! is_ready;
 do
     i=`expr $i + 1`
-    if [ $i -ge 5 ]; then
+    if [ $i -ge 10 ]; then
         echo "$(date) - cids integration base container still not ready, giving up"
         exit 1
     fi
     echo "$(date) - waiting for cids integration base to be ready"
-    sleep 5
+    sleep 6
 done
 echo '###### START LEGACY CIDS-SERVER ######'
 echo 'connecting to cids Integration Base at '${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}
