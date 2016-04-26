@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:trusty
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
 ENV DATA_DIR /data
