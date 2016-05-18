@@ -20,7 +20,7 @@ WORKDIR /usr/local/
 
 # install dependencies
 RUN apt-get update \
-  && apt-get install -y build-essential gcc-4.7 libgdal1h libreadline6-dev libxml2 libxml2-dev locales zlib1g-dev
+  && apt-get install -y build-essential gcc-4.7 libgdal1h libreadline6-dev libxml2 libxml2-dev locales zlib1g-dev curl
 
 # locale
 RUN localedef -i $LOCALE -c -f $ENCODING -A /usr/share/locale/locale.alias ${LOCALE}.${ENCODING}
