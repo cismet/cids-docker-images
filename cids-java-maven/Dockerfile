@@ -12,7 +12,9 @@ ENV MAVEN_VERSION 3.3.9
 ENV JAVA_HOME /usr/lib/jvm/java-${JAVA_VERSION}-oracle
 ENV JRE_HOME ${JAVA_HOME}/jre
 ENV MAVEN_HOME /usr/share/maven
-ENV UPDATE_SNAPSHOTS TRUE
+ENV IMPORT_DIR /import
+ENV CIDS_ACCOUNT_EXTENSION CidsReference
+ENV UPDATE_SNAPSHOTS -U
 
 RUN apt-get update \
   && apt-get -y --no-install-recommends install ca-certificates curl gcc libc6-dev libssl-dev make
