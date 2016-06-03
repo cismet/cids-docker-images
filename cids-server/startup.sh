@@ -10,7 +10,7 @@ mkdir -p ${CIDS_SERVER_DIR}
 cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/
 cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/
 cd ${CIDS_SERVER_DIR}/
-mvn -Djavax.net.ssl.trustStore=${DATA_DIR}/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package -U -X -e
+mvn -Djavax.net.ssl.trustStore=${DATA_DIR}/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package ${UPDATE_SNAPSHOTS:+-U} -X -e
 echo '###### CHECKING CONNECTION TO CIDS INTEGRATION BASE ######'
 is_ready() {
     eval "psql -h $CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR -U postgres -c \"DROP TABLE IF EXISTS isready; CREATE TABLE isready (); COPY isready FROM '/tmp/isready.csv' DELIMITER ';' CSV HEADER\""
