@@ -14,7 +14,7 @@ WORKDIR ${DATA_DIR}/
 
 EXPOSE 9986
 
-COPY icons ${CIDS_SERVER_DIR}/
+COPY icons ${CIDS_SERVER_DIR}/icons
 
 # copy startup script
 COPY startup.sh /tmp/
