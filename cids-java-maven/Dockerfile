@@ -45,7 +45,6 @@ RUN apt-get update \
   && apt-get install -y postgresql-client \
   && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p ${MAVEN_LIB_DIR}/javax/servlet/jsp/jsp-api/2.1.2
-COPY jsp-api-2.1.2.pom $MAVEN_LIB_DIR/javax/servlet/jsp/jsp-api/2.1.2/
+COPY lib $MAVEN_LIB_DIR/
 COPY policy.file ${DATA_DIR}/
 COPY truststore.ks ${DATA_DIR}/
