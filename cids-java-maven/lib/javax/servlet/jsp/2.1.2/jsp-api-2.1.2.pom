@@ -64,27 +64,27 @@
 
     <build>
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
                 <executions>
-                  <execution>
-                    <phase>javadoc</phase>
-                    <goals>
-                        <goal>javadoc</goal>
-                    </goals>
-                    <configuration>
-                      <groups>
-                        <group>
-                          <title>JavaServer Pages API Documentation</title>
-                          <packages>javax.servlet.jsp</packages>
-                        </group>
-                      </groups>
-                      <bottom>Portions Copyright &amp;copy; 1999-2002 The Apache Software Foundation.  All Rights Reserved. Portions Copyright &amp;copy; 2005-2006 Sun Microsystems Inc.  All Rights Reserve</bottom>
-                    </configuration>
-                  </execution>
+                    <execution>
+                        <phase>javadoc</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <configuration>
+                            <groups>
+                                <group>
+                                    <title>JavaServer Pages API Documentation</title>
+                                    <packages>javax.servlet.jsp</packages>
+                                </group>
+                            </groups>
+                            <bottom>Portions Copyright &amp;copy; 1999-2002 The Apache Software Foundation.  All Rights Reserved. Portions Copyright &amp;copy; 2005-2006 Sun Microsystems Inc.  All Rights Reserve</bottom>
+                        </configuration>
+                    </execution>
                 </executions>
-          </plugin>   
+            </plugin>   
         </plugins>
         <resources>
             <resource>
@@ -99,12 +99,22 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.2</version>
+            <version>${servlet-api.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
-            <version>2.2</version>
+            <version>${el-impl.version}</version>
         </dependency>
-   </dependencies>
+    </dependencies>
+   
+    <!-- QUICK FIX: For some reasons, those properties are not inherited from parent POM! -->
+    <properties>
+        <jsp-api.version>2.1.2</jsp-api.version>
+        <jsp-impl.version>2.1.2-b01</jsp-impl.version>
+        <servlet-api.version>2.5</servlet-api.version>
+        <el-api.version>2.1.2-b01</el-api.version>
+        <el-impl.version>2.1.2-b01</el-impl.version>
+        <ant.version>1.7.0</ant.version>
+    </properties>
 </project>
