@@ -130,7 +130,6 @@ RUN pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start \
 # postgis template
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/postgis/postgis.sql \
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/spatial_ref_sys.sql \
-  && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/postgis_comments.sql \
   && pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} stop
 
 USER root
