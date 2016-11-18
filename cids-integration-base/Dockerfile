@@ -9,10 +9,13 @@ ENV IMPORT_DIR /import
 ENV CIDS_INTEGRATION_BASE_DIR ${DATA_DIR}/cids-integration-base
 # .sql files in the dumps folder are imported upon start -> docker-volumes
 ENV CIDS_INTEGRATION_BASE_IMPORT_DIR ${IMPORT_DIR}/cids-integration-base
-ENV PG_VERSION 9.0.3
-ENV GEOS_VERSION 3.3.5
-ENV PROJ4_VERSION 4.8.0
-ENV POSTGIS_VERSION 1.5.5
+ENV PG_VERSION 9.6.1
+ENV GEOS_VERSION 3.6.0
+ENV PROJ4_VERSION 4.9.3
+ENV GDAL_VERSION 1.11.5
+ENV JSONC_VERSION 0.12.1
+ENV LIBXML_VERSION 2.9.4
+ENV POSTGIS_VERSION 2.3.0
 ENV LOCALE de_DE
 ENV ENCODING UTF-8
 
@@ -26,6 +29,7 @@ RUN apt-get update \
 RUN localedef -i $LOCALE -c -f $ENCODING -A /usr/share/locale/locale.alias ${LOCALE}.${ENCODING}
 RUN locale-gen ${LOCALE}.${ENCODING}
 
+# build & install postgresql
 ADD https://ftp.postgresql.org/pub/source/v${PG_VERSION}/postgresql-${PG_VERSION}.tar.bz2 src/
 RUN cd src/ ; tar -xjvf postgresql-${PG_VERSION}.tar.bz2
 RUN cd src/postgresql-${PG_VERSION} ; ./configure CC='gcc-4.7 -m64' --prefix=/usr/local --with-pgport=5432
@@ -49,6 +53,31 @@ RUN cd src/ ; tar -xvf proj-${PROJ4_VERSION}.tar.gz
 RUN cd src/proj-${PROJ4_VERSION} ; ./configure
 RUN cd src/proj-${PROJ4_VERSION} ; make
 RUN cd src/proj-${PROJ4_VERSION} ; make install
+RUN ldconfig
+
+# build & install JSON-C
+ADD https://s3.amazonaws.com/json-c_releases/releases/json-c-${JSONC_VERSION}.tar.gz src/
+RUN cd src/ ; tar -xvf json-c-${JSONC_VERSION}.tar.gz
+RUN cd src/json-c-${JSONC_VERSION} ; ./configure --prefix=/usr/local
+RUN cd src/json-c-${JSONC_VERSION} ; make
+#RUN cd src/json-c-${JSONC_VERSION} ; make check #
+RUN cd src/json-c-${JSONC_VERSION} ; make install
+RUN ldconfig
+
+# build & install LIBXML
+ADD http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz src/
+RUN cd src/ ; tar -xvf libxml2-${LIBXML_VERSION}.tar.gz
+RUN cd src/libxml2-${LIBXML_VERSION} ; ./configure
+RUN cd src/libxml2-${LIBXML_VERSION} ; make
+RUN cd src/libxml2-${LIBXML_VERSION} ; make install
+RUN ldconfig
+
+# build & install GDAL
+ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz src/
+RUN cd src/ ; tar -xvf gdal-${GDAL_VERSION}.tar.gz
+RUN cd src/gdal-${GDAL_VERSION} ; ./configure
+RUN cd src/gdal-${GDAL_VERSION} ; make
+RUN cd src/gdal-${GDAL_VERSION} ; make install
 RUN ldconfig
 
 # build & install postgis
@@ -101,6 +130,7 @@ RUN pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start \
 # postgis template
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/postgis/postgis.sql \
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/spatial_ref_sys.sql \
+  && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/postgis_comments.sql \
   && pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} stop
 
 USER root
