@@ -17,6 +17,7 @@ ENV CIDS_ACCOUNT_EXTENSION CidsReference
 ENV UPDATE_SNAPSHOTS -U
 
 RUN apt-get update \
+  && apt-get upgrade -y \
   && apt-get -y --no-install-recommends install ca-certificates curl gcc libc6-dev libssl-dev make
 
 RUN mkdir -p /usr/lib/jvm
