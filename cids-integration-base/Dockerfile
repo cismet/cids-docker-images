@@ -18,12 +18,15 @@ ENV LIBXML_VERSION 2.9.4
 ENV POSTGIS_VERSION 2.3.0
 ENV LOCALE de_DE
 ENV ENCODING UTF-8
+ENV PGCLIENTENCODING UTF-8
+ENV PGPORT 5432
 
 WORKDIR /usr/local/
 
 # install dependencies
 RUN apt-get update \
-  && apt-get install -y build-essential gcc-4.7 libgdal1h libreadline6-dev libxml2 libxml2-dev locales zlib1g-dev curl autoconf
+  && apt-get upgrade -y \
+  && apt-get install -y build-essential gcc-4.7 libgdal1h libreadline6-dev libxml2 libxml2-dev locales zlib1g-dev curl autoconf xsltproc git libcunit1 libcunit1-doc libcunit1-dev
 
 # locale
 RUN localedef -i $LOCALE -c -f $ENCODING -A /usr/share/locale/locale.alias ${LOCALE}.${ENCODING}
@@ -83,6 +86,7 @@ RUN ldconfig
 # build & install postgis
 ADD http://download.osgeo.org/postgis/source/postgis-${POSTGIS_VERSION}.tar.gz src/
 RUN cd src/ ; tar -xvf postgis-${POSTGIS_VERSION}.tar.gz
+RUN cd src/postgis-${POSTGIS_VERSION} ; ./autogen.sh
 RUN cd src/postgis-${POSTGIS_VERSION} ; ./configure
 RUN cd src/postgis-${POSTGIS_VERSION} ; make
 RUN cd src/postgis-${POSTGIS_VERSION} ; make install
@@ -134,7 +138,7 @@ RUN pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start \
 
 USER root
 # clean up
-RUN apt-get remove --purge --auto-remove -y build-essential gcc-4.7 libreadline6-dev libxml2-dev zlib1g-dev
+RUN apt-get remove --purge --auto-remove -y build-essential gcc-4.7 libreadline6-dev libxml2-dev zlib1g-dev autoconf xsltproc git libcunit1 libcunit1-doc libcunit1-dev
 RUN rm -rf /var/lib/apt/lists/* src/*
 
 # port
