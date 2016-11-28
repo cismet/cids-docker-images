@@ -1,2 +1,0 @@
-This is the server configuration directory. All contents in the image (including this file)
-will be overlaid by a HOST-MOUNTED DOCKER VOLUME!

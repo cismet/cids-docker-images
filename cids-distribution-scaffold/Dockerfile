@@ -8,11 +8,18 @@ LABEL de.cismet.cids.distribution.scaffold.name="cids-distribution-scaffold imag
 
 # keep DATA_DIR for backwards compatilibity with cids-server-* images
 ENV CIDS_DISTRIBUTION_DIR ${DATA_DIR} 
+ENV CIDS_LIB_DIR ${CIDS_DISTRIBUTION_DIR}/lib
+ENV CIDS_LOCAL_DIR ${CIDS_LIB_DIR }/local${CIDS_ACCOUNT_EXTENSION}
+ENV CIDS_STARTER_DIR ${CIDS_LIB_DIR }/starter${CIDS_ACCOUNT_EXTENSION}
+ENV CIDS_SERVER_DIR ${CIDS_DISTRIBUTION_DIR}/server
+ENV CIDS_CLIENT_DIR ${CIDS_DISTRIBUTION_DIR}/client
+
 WORKDIR ${CIDS_DISTRIBUTION_DIR}/
 
 COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
 
-VOLUME ${CIDS_DISTRIBUTION_DIR}/
+# IMPORTANT: Define the volume in custom images not in the base image!
+# VOLUME ${CIDS_DISTRIBUTION_DIR}/
 
 # add /tmp as volume since it may contain data that changes often
 VOLUME /tmp

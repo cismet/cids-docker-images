@@ -1,0 +1,4 @@
+INTERNAL cids dependencies for MANUAL DISTRIBUTIONS maintained with cidsABF (in docker image)
+
+The content of this folder is part of the custom cids-distribution IMAGE!
+Not used for AUTO DISTRIBUTIONs (dependencies go into /cidsDistribution/lib/m2 instead)
