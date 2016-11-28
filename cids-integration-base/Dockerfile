@@ -2,6 +2,10 @@ FROM ubuntu:trusty
 
 MAINTAINER Jean-Michel Ruiz "jean.ruiz@cismet.de"
 
+LABEL de.cismet.cids.integration.base.name="cids-integration-base PostgeSQL image" \
+      de.cismet.cids.integration.base.version="postgres-9.6.1-1.0" \
+      de.cismet.cids.integration.base.descripton="PostgeSQL Runtime Image" 
+
 # ENV
 ENV POSTGRES_PASSWORD postgres
 ENV DATA_DIR /data
@@ -24,91 +28,96 @@ ENV PGPORT 5432
 WORKDIR /usr/local/
 
 # install dependencies
-RUN apt-get update \
-  && apt-get upgrade -y \
-  && apt-get install -y build-essential gcc-4.7 libgdal1h libreadline6-dev libxml2 libxml2-dev locales zlib1g-dev curl autoconf xsltproc git libcunit1 libcunit1-doc libcunit1-dev
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+  && apt-get update \
+  && apt-get install -y build-essential gcc-4.7 libreadline6-dev libxml2-dev locales zlib1g-dev curl autoconf xsltproc git libcunit1 libcunit1-doc libcunit1-dev
 
 # locale
-RUN localedef -i $LOCALE -c -f $ENCODING -A /usr/share/locale/locale.alias ${LOCALE}.${ENCODING}
-RUN locale-gen ${LOCALE}.${ENCODING}
+RUN localedef -i $LOCALE -c -f $ENCODING -A /usr/share/locale/locale.alias ${LOCALE}.${ENCODING} \
+    && locale-gen ${LOCALE}.${ENCODING}
 
 # build & install postgresql
-ADD https://ftp.postgresql.org/pub/source/v${PG_VERSION}/postgresql-${PG_VERSION}.tar.bz2 src/
-RUN cd src/ ; tar -xjvf postgresql-${PG_VERSION}.tar.bz2
-RUN cd src/postgresql-${PG_VERSION} ; ./configure CC='gcc-4.7 -m64' --prefix=/usr/local --with-pgport=5432
-RUN cd src/postgresql-${PG_VERSION} ; make
-RUN cd src/postgresql-${PG_VERSION} ; make install
-RUN cd src/postgresql-${PG_VERSION}/contrib ; make all
-RUN cd src/postgresql-${PG_VERSION}/contrib ; make install
-RUN ldconfig
+# ADD https://ftp.postgresql.org/pub/source/v${PG_VERSION}/postgresql-${PG_VERSION}.tar.bz2 src/
+RUN cd src/ ; curl -fsSL https://ftp.postgresql.org/pub/source/v${PG_VERSION}/postgresql-${PG_VERSION}.tar.bz2 | tar -xj \
+    && cd postgresql-${PG_VERSION} ; ./configure CC='gcc-4.7 -m64' --prefix=/usr/local --with-pgport=5432 \
+    && make \
+    && make install \
+    && make all \
+    && cd contrib ; make install \
+    && ldconfig \
+    && pwd
 
 # build & install geos
-ADD http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 src/
-RUN cd src/ ; tar -xjvf geos-${GEOS_VERSION}.tar.bz2
-RUN cd src/geos-${GEOS_VERSION} ; ./configure
-RUN cd src/geos-${GEOS_VERSION} ; make
-RUN cd src/geos-${GEOS_VERSION} ; make install
-RUN ldconfig
+# ADD http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 src/
+RUN cd src/ ; curl -fsSL http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 | tar -xj \
+    && cd geos-${GEOS_VERSION} ; ./configure \
+    && make \
+    && make install \
+    && ldconfig \
+    && pwd
 
 # build & install proj4
-ADD http://download.osgeo.org/proj/proj-${PROJ4_VERSION}.tar.gz src/
-RUN cd src/ ; tar -xvf proj-${PROJ4_VERSION}.tar.gz
-RUN cd src/proj-${PROJ4_VERSION} ; ./configure
-RUN cd src/proj-${PROJ4_VERSION} ; make
-RUN cd src/proj-${PROJ4_VERSION} ; make install
-RUN ldconfig
+# ADD http://download.osgeo.org/proj/proj-${PROJ4_VERSION}.tar.gz src/
+RUN cd src/ ; curl -fsSL http://download.osgeo.org/proj/proj-${PROJ4_VERSION}.tar.gz | tar -xz \
+    && cd proj-${PROJ4_VERSION} ; ./configure \
+    && make \
+    && make install \
+    && ldconfig \
+    && pwd
 
 # build & install JSON-C
-ADD https://s3.amazonaws.com/json-c_releases/releases/json-c-${JSONC_VERSION}.tar.gz src/
-RUN cd src/ ; tar -xvf json-c-${JSONC_VERSION}.tar.gz
-RUN cd src/json-c-${JSONC_VERSION} ; ./configure --prefix=/usr/local
-RUN cd src/json-c-${JSONC_VERSION} ; make
-#RUN cd src/json-c-${JSONC_VERSION} ; make check #
-RUN cd src/json-c-${JSONC_VERSION} ; make install
-RUN ldconfig
+# ADD https://s3.amazonaws.com/json-c_releases/releases/json-c-${JSONC_VERSION}.tar.gz src/
+RUN cd src/ ; curl -fsSL https://s3.amazonaws.com/json-c_releases/releases/json-c-${JSONC_VERSION}.tar.gz | tar -xz \
+    && cd json-c-${JSONC_VERSION} ; ./configure --prefix=/usr/local \
+    && make \
+#   && make check \
+    && make install \
+    && ldconfig 
 
 # build & install LIBXML
-ADD http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz src/
-RUN cd src/ ; tar -xvf libxml2-${LIBXML_VERSION}.tar.gz
-RUN cd src/libxml2-${LIBXML_VERSION} ; ./configure
-RUN cd src/libxml2-${LIBXML_VERSION} ; make
-RUN cd src/libxml2-${LIBXML_VERSION} ; make install
-RUN ldconfig
+# ADD http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz src/
+RUN cd src/ ; curl -fsSL http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz | tar -xz \
+    && cd libxml2-${LIBXML_VERSION} ; ./configure \
+    && make \
+    && make install \
+    && ldconfig
 
 # build & install GDAL
-ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz src/
-RUN cd src/ ; tar -xvf gdal-${GDAL_VERSION}.tar.gz
-RUN cd src/gdal-${GDAL_VERSION} ; ./configure
-RUN cd src/gdal-${GDAL_VERSION} ; make
-RUN cd src/gdal-${GDAL_VERSION} ; make install
-RUN ldconfig
+# ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz src/
+RUN cd src/ ; curl -fsSL http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz | tar -xz \
+    && cd gdal-${GDAL_VERSION} ; ./configure \
+    && make \
+    && make install \
+    && ldconfig
 
 # build & install postgis
-ADD http://download.osgeo.org/postgis/source/postgis-${POSTGIS_VERSION}.tar.gz src/
-RUN cd src/ ; tar -xvf postgis-${POSTGIS_VERSION}.tar.gz
-RUN cd src/postgis-${POSTGIS_VERSION} ; ./autogen.sh
-RUN cd src/postgis-${POSTGIS_VERSION} ; ./configure
-RUN cd src/postgis-${POSTGIS_VERSION} ; make
-RUN cd src/postgis-${POSTGIS_VERSION} ; make install
-RUN ldconfig
+# ADD http://download.osgeo.org/postgis/source/postgis-${POSTGIS_VERSION}.tar.gz src/
+RUN cd src/ ; curl -fsSL http://download.osgeo.org/postgis/source/postgis-${POSTGIS_VERSION}.tar.gz | tar -xz \
+    && cd postgis-${POSTGIS_VERSION} ; ./autogen.sh \
+    && ./configure \
+    && make \
+    && make install \
+    && ldconfig
 
 # create postgres user
-RUN groupadd postgres
-RUN useradd -r postgres -g postgres
-RUN echo "postgres:${POSTGRES_PASSWORD}" | chpasswd -e
+RUN groupadd postgres \
+    && useradd -r postgres -g postgres \
+    && echo "postgres:${POSTGRES_PASSWORD}" | chpasswd -e
 
 # create common data directory
-RUN mkdir -p ${DATA_DIR}
-
+RUN mkdir -p ${DATA_DIR} \
+    && echo ${DATA_DIR} \
 # create common import directory
-RUN mkdir -p ${IMPORT_DIR}
+    && mkdir -p ${IMPORT_DIR} \
+    && echo ${IMPORT_DIR} \
 # create dumps directory
-RUN mkdir -p ${CIDS_INTEGRATION_BASE_IMPORT_DIR}
-
+    && mkdir -p ${CIDS_INTEGRATION_BASE_IMPORT_DIR} \
+    && echo ${CIDS_INTEGRATION_BASE_IMPORT_DIR} \
 # create postgres data directory
-RUN mkdir -p ${CIDS_INTEGRATION_BASE_DIR}
-RUN chown postgres:postgres ${CIDS_INTEGRATION_BASE_DIR}
-RUN chmod 700 ${CIDS_INTEGRATION_BASE_DIR}
+    && mkdir -p ${CIDS_INTEGRATION_BASE_DIR} \
+    && echo ${CIDS_INTEGRATION_BASE_DIR}
+RUN chown postgres:postgres ${CIDS_INTEGRATION_BASE_DIR} \
+    && chmod 700 ${CIDS_INTEGRATION_BASE_DIR}
 
 USER postgres
 # initdb
@@ -123,8 +132,8 @@ RUN initdb \
 
 USER root
 # conf
-RUN echo "host all all 0.0.0.0/0 md5" >> $CIDS_INTEGRATION_BASE_DIR/pg_hba.conf
-RUN echo "listen_addresses='*'" >> $CIDS_INTEGRATION_BASE_DIR/postgresql.conf
+RUN echo "host all all 0.0.0.0/0 md5" >> $CIDS_INTEGRATION_BASE_DIR/pg_hba.conf \
+    && echo "listen_addresses='*'" >> $CIDS_INTEGRATION_BASE_DIR/postgresql.conf
 
 USER postgres
 RUN pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start \
@@ -138,16 +147,17 @@ RUN pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start \
 
 USER root
 # clean up
-RUN apt-get remove --purge --auto-remove -y build-essential gcc-4.7 libreadline6-dev libxml2-dev zlib1g-dev autoconf xsltproc git libcunit1 libcunit1-doc libcunit1-dev
-RUN rm -rf /var/lib/apt/lists/* src/*
+RUN apt-get remove --purge --auto-remove -y build-essential gcc-4.7 libreadline6-dev libxml2-dev zlib1g-dev autoconf xsltproc git libcunit1 libcunit1-doc libcunit1-dev \
+    && rm -rf /var/lib/apt/lists/* src/*
 
 # port
 EXPOSE 5432
 
-# data
-VOLUME ${DATA_DIR}
-#It is important to do it in the right order, because the files inside the container 
-#are only copied to the volume by the first container that uses it (and the volume is still empty)
+# data volume: disabled -> it should be mounted when creating the container!
+# VOLUME ${DATA_DIR}
+# It is important to do it in the right order, because the files inside the container 
+# are only copied to the volume by the first container that uses it (and the volume is still empty)
+# The VOLUME instruction in a Dockerfile will add one or more new volumes to any containers created from the image.
 
 # copy startup script
 COPY startup.sh /tmp/

@@ -1,6 +1,12 @@
 FROM ubuntu:trusty
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
-ENV DATA_DIR /data
+
+LABEL de.cismet.cids.java.maven.name="cids-java-maven runtime image" \
+      de.cismet.cids.java.maven.version="jdk-1.8u112-1.0" \
+      de.cismet.cids.java.maven.descripton="Java and Maven Runtime Image" 
+
+# keep DATA_DIR for backwards compatilibity with cids-server-* images
+ENV DATA_DIR /cidsDistribution 
 ENV LIB_DIR ${DATA_DIR}/lib
 ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
 ENV MAVEN_OPTS -XX:-OmitStackTraceInFastThrow -server -Xms512m -Xmx1024m
@@ -16,35 +22,36 @@ ENV IMPORT_DIR /import
 ENV CIDS_ACCOUNT_EXTENSION CidsReference
 ENV UPDATE_SNAPSHOTS -U
 
-RUN apt-get update \
-  && apt-get upgrade -y \
-  && apt-get -y --no-install-recommends install ca-certificates curl gcc libc6-dev libssl-dev make
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+    && apt-get update \
+    && apt-get -y --no-install-recommends install ca-certificates curl gcc libc6-dev libssl-dev make
 
-RUN mkdir -p /usr/lib/jvm
-RUN curl --silent --location --retry 3 --cacert /etc/ssl/certs/GeoTrust_Global_CA.pem --header "Cookie: oraclelicense=accept-securebackup-cookie;" http://download.oracle.com/otn-pub/java/jdk/"${JAVA_VERSION}"u"${JAVA_UPDATE}"-b"${JAVA_BUILD}"/server-jre-"${JAVA_VERSION}"u"${JAVA_UPDATE}"-linux-x64.tar.gz | tar xz -C /tmp
-RUN mv /tmp/jdk1.${JAVA_VERSION}.0_${JAVA_UPDATE} "${JAVA_HOME}"
+RUN mkdir -p /usr/lib/jvm \
+    && curl --silent --location --retry 3 --cacert /etc/ssl/certs/GeoTrust_Global_CA.pem --header "Cookie: oraclelicense=accept-securebackup-cookie;" http://download.oracle.com/otn-pub/java/jdk/"${JAVA_VERSION}"u"${JAVA_UPDATE}"-b"${JAVA_BUILD}"/server-jre-"${JAVA_VERSION}"u"${JAVA_UPDATE}"-linux-x64.tar.gz | tar xz -C /tmp \
+    && mv /tmp/jdk1.${JAVA_VERSION}.0_${JAVA_UPDATE} "${JAVA_HOME}"
 
-RUN curl --silent --location --retry 3 --cacert /etc/ssl/certs/GlobalSign_Root_CA.pem https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xz -C /tmp
-RUN cd /tmp/openssl-"${OPENSSL_VERSION}" ; ./config --prefix=/usr
-RUN cd /tmp/openssl-"${OPENSSL_VERSION}" ; make clean
-RUN cd /tmp/openssl-"${OPENSSL_VERSION}" ; make
-RUN cd /tmp/openssl-"${OPENSSL_VERSION}" ; make install
+RUN curl --silent --location --retry 3 --cacert /etc/ssl/certs/GlobalSign_Root_CA.pem https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar xz -C /tmp \
+    && cd /tmp/openssl-"${OPENSSL_VERSION}" ; ./config --prefix=/usr \
+    && cd /tmp/openssl-"${OPENSSL_VERSION}" ; make clean \
+    && cd /tmp/openssl-"${OPENSSL_VERSION}" ; make \
+    && cd /tmp/openssl-"${OPENSSL_VERSION}" ; make install
 
-RUN mkdir -p ${MAVEN_HOME}
-RUN curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC ${MAVEN_HOME} --strip-components=1
-RUN ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
+RUN mkdir -p ${MAVEN_HOME} \
+    && curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC ${MAVEN_HOME} --strip-components=1 \
+    && ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
 
-RUN apt-get remove --purge --auto-remove -y gcc libc6-dev libssl-dev make
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get remove --purge --auto-remove -y gcc libc6-dev libssl-dev make \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 1
-RUN update-alternatives --install "/usr/bin/javac" "javac" "${JAVA_HOME}/bin/javac" 1
-RUN update-alternatives --set java "${JRE_HOME}/bin/java"
-RUN update-alternatives --set javac "${JAVA_HOME}/bin/javac"
+RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 1 \ 
+    && update-alternatives --install "/usr/bin/javac" "javac" "${JAVA_HOME}/bin/javac" 1 \
+    && update-alternatives --set java "${JRE_HOME}/bin/java" \
+    && update-alternatives --set javac "${JAVA_HOME}/bin/javac"
 
-RUN apt-get update \
-  && apt-get install -y postgresql-client \
-  && rm -rf /var/lib/apt/lists/*
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+    && apt-get update \
+    && apt-get install -y postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY lib $MAVEN_LIB_DIR/
 COPY policy.file ${DATA_DIR}/

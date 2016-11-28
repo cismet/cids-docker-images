@@ -1,0 +1,8 @@
+This is apache maven's localRepository (MAVEN_BIB_DIR or lib/m2) and is only used
+in an AUTO-DISTRUBUTION.
+
+The image contains some 'problematic' dependencies that cannot retrieved from public maven repositories.
+
+This directory can safely declared a DATA VOLUME, since if the container’s base image 
+contains data at the specified mount point, that existing data is copied into the new 
+volume upon volume initialization. (Note that this does not apply when mounting a host directory!)
