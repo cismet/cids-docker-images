@@ -8,8 +8,15 @@ LABEL de.cismet.cids.distribution.scaffold.name="cids-distribution-scaffold imag
 
 # use empty account extension -> lib/local and lib/starter
 ENV CIDS_ACCOUNT_EXTENSION=""
+ENV CIDS_LOCAL_DIR ${CIDS_LIB_DIR}/local${CIDS_ACCOUNT_EXTENSION}
+ENV CIDS_STARTER_DIR ${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}
+
+# use .dockerignore to control which files go into the image and which not (faster!)
+COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
 
 # assume local libs are required during image build time -> see .local.templates/.contents.txt for explanation
-COPY cidsDistribution/lib/.local.templates ${CIDS_DISTRIBUTION_DIR}/lib/local
+# don't add cidsDistribution/lib/.local.templates to .dockerignore in order to make this work
+COPY cidsDistribution/lib/.local.templates ${CIDS_DISTRIBUTION_DIR}/lib/local/
+RUN rm -rf ${CIDS_DISTRIBUTION_DIR}/lib/.local.templates
 
 ENTRYPOINT /bin/bash

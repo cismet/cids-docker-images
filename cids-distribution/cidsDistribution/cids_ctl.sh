@@ -5,6 +5,9 @@
 #export CIDS_DISTRIBUTION_DIR=/cidsDistribution <- already set in docker image
 #export CIDS_SERVER_DIR=$CIDS_DISTRIBUTION_DIR/server <- already set in docker image
 
+export CIDS_LOCAL_DIR=${CIDS_LIB_DIR}/local${CIDS_ACCOUNT_EXTENSION}
+export CIDS_STARTER_DIR=${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}
+
 ### FUNCTIONS 
 # -----------------------------------------------------------------------------------------
 

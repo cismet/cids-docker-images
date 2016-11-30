@@ -11,8 +11,6 @@ LABEL de.cismet.cids.distribution.name="cids-distribution image" \
 # keep DATA_DIR for backwards compatilibity with cids-server-* images
 ENV CIDS_DISTRIBUTION_DIR ${DATA_DIR} 
 ENV CIDS_LIB_DIR ${CIDS_DISTRIBUTION_DIR}/lib
-ENV CIDS_LOCAL_DIR ${CIDS_LIB_DIR}/local${CIDS_ACCOUNT_EXTENSION}
-ENV CIDS_STARTER_DIR ${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}
 ENV CIDS_SERVER_DIR ${CIDS_DISTRIBUTION_DIR}/server
 ENV CIDS_CLIENT_DIR ${CIDS_DISTRIBUTION_DIR}/client
 

@@ -7,6 +7,7 @@ cd $SERVICE_DIR
 ### IMPOSTORCHECK 
 # -----------------------------------------------------------------------------------------
 if [ ! -f $PROCESS_NAME ]; then
+    echo "creating impostor $PROCESS_NAME for $STARTER_JAR in $SERVICE_DIR"
     ${CIDS_DISTRIBUTION_DIR}/utils/create_impostor.sh $SERVICE_DIR $STARTER_JAR $PROCESS_NAME
     cd $SERVICE_DIR
 fi 
