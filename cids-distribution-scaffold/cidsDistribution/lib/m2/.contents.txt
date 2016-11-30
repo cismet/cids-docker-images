@@ -1,0 +1,4 @@
+This is apache maven's localRepository (MAVEN_BIB_DIR or lib/m2) and is only used
+in an AUTO-DISTRUBUTION!
+
+The base image 'cids-java-maven' adds some 'problematic' dependencies that cannot retrieved from public maven repositories.

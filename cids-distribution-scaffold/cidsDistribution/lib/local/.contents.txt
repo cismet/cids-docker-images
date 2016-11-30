@@ -1,4 +1,10 @@
 Local runtime dependent configuration for custom cids-distribution containers (host mounted volume)
 
 The content of this folder and thus in the image (including this file) will be overlaid by a HOST-MOUNTED DOCKER VOLUME!
-custom cids-distributions may use their own start directories e.g. starterWunda
+
+Example: When the image is built res.jar from host:lib/.local.templates is copied to 
+container:lib/local while ignoring the file host:lib/res.jar (see .dockerignore)
+When the container is started, host:lib/local is mounted to container:lib/local (see run.sh), 
+thus the actual res.jar is used by the container.
+
+custom cids-distributions shall use their own local directories e.g. localWunda

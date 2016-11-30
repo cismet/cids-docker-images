@@ -1,2 +1,13 @@
-build.bat
 build.sh
+run.sh
+start.sh
+docker-compose.yml
+client
+lib/.local.templates
+lib/cidsLibBase
+lib/classpath
+lib/ext
+lib/int
+lib/local
+lib/m2
+server

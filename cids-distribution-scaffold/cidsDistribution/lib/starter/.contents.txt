@@ -1,4 +1,4 @@
 Starters for AUTO- and MANUAL DISTRIBUTIONS maintained with cidsABF (in docker image)
 
 The content of this folder is part of the custom cids-distribution IMAGE!
-custom cids-distributions may use their own start directories e.g. starterWunda
+custom cids-distributions shall use their own starter directories e.g. starterWunda

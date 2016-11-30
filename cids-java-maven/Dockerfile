@@ -21,6 +21,7 @@ ENV MAVEN_HOME /usr/share/maven
 ENV IMPORT_DIR /import
 ENV CIDS_ACCOUNT_EXTENSION CidsReference
 ENV UPDATE_SNAPSHOTS -U
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \

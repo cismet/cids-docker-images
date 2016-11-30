@@ -1,0 +1,11 @@
+Local runtime dependent configuration template JARs (empty JARs) for custom cids-distribution 
+containers (local on docker host).
+
+Local runtime dependent configurations are not part of the image but need to be present 
+during automated builds of AUTO DISTRIBUTIONS since they are put into the lib/classpath JARs! 
+
+When building an AUTO DISTRIBUTION, the JARs in this directory are copied into the image to lib/local.
+The cids maven plugin adds those local dependencies to lib/classpath JARs and the client JNLPs. When the
+container is started,  the empty JAR in container:lib/local are overlayed with the actual JAR from the host-mounted volume.
+
+custom cids-distributions may use their own local.scaffold directories e.g. .localSwitchon.template

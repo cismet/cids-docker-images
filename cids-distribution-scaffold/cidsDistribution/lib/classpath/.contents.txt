@@ -1,0 +1,5 @@
+Generated classpath JARS for AUTO DISTRIBUTIONS (in docker image)
+
+The content of this folder is part of the custom cids-distribution IMAGE!
+Not used for MANUAL DISTRIBUTIONs (classpath dependencies go directly into starters instead!)
+custom cids-distributions may use their own classpath directories e.g. classpathSwitchon

@@ -1,27 +1,15 @@
-FROM cismet/cids-java-maven:latest
+FROM cismet/cids-distribution:latest
 
 MAINTAINER Pascal Dihé <pascal.dihe@cismet.de>
 
 LABEL de.cismet.cids.distribution.scaffold.name="cids-distribution-scaffold image" \
-      de.cismet.cids.distribution.scaffold.version="cidsDistribution-1.0-0.1" \
+      de.cismet.cids.distribution.scaffold.version="cidsDistributionScaffold-1.0" \
       de.cismet.cids.distribution.scaffold.descripton="Scaffold cids distribution Runtime Image" 
 
-# keep DATA_DIR for backwards compatilibity with cids-server-* images
-ENV CIDS_DISTRIBUTION_DIR ${DATA_DIR} 
-ENV CIDS_LIB_DIR ${CIDS_DISTRIBUTION_DIR}/lib
-ENV CIDS_LOCAL_DIR ${CIDS_LIB_DIR }/local${CIDS_ACCOUNT_EXTENSION}
-ENV CIDS_STARTER_DIR ${CIDS_LIB_DIR }/starter${CIDS_ACCOUNT_EXTENSION}
-ENV CIDS_SERVER_DIR ${CIDS_DISTRIBUTION_DIR}/server
-ENV CIDS_CLIENT_DIR ${CIDS_DISTRIBUTION_DIR}/client
+# use empty account extension -> lib/local and lib/starter
+ENV CIDS_ACCOUNT_EXTENSION=""
 
-WORKDIR ${CIDS_DISTRIBUTION_DIR}/
-
-COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
-
-# IMPORTANT: Define the volume in custom images not in the base image!
-# VOLUME ${CIDS_DISTRIBUTION_DIR}/
-
-# add /tmp as volume since it may contain data that changes often
-VOLUME /tmp
+# assume local libs are required during image build time -> see .local.templates/.contents.txt for explanation
+COPY cidsDistribution/lib/.local.templates ${CIDS_DISTRIBUTION_DIR}/lib/local
 
 ENTRYPOINT /bin/bash
