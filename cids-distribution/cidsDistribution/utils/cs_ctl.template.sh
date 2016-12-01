@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROCESS_NAME=cids_server_name
+SERVICE=cids_server_name
 STARTER_JAR=headlessServerConsole.jar
 XMS=128m
 XMX=512m

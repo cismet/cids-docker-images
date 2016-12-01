@@ -19,4 +19,4 @@ COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
 COPY cidsDistribution/lib/.local.templates ${CIDS_DISTRIBUTION_DIR}/lib/local/
 RUN rm -rf ${CIDS_DISTRIBUTION_DIR}/lib/.local.templates
 
-ENTRYPOINT /bin/bash
+#ENTRYPOINT /bin/bash

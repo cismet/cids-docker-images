@@ -19,10 +19,15 @@ WORKDIR ${CIDS_DISTRIBUTION_DIR}/
 # use .dockerignore to control which files go into the image and which not (faster!)
 COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
 
+COPY container_ctl.sh /
+
 # IMPORTANT: Define the volume in custom images not in the base image!
 # VOLUME ${CIDS_DISTRIBUTION_DIR}/
 
-RUN chmod -R +x *.sh
+RUN chmod -R +x *.sh \
+    && chmod +x /container_ctl.sh
 
 # add /tmp as volume since it may contain data that changes often
 VOLUME /tmp
+
+ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]
