@@ -23,6 +23,8 @@ ENV CIDS_ACCOUNT_EXTENSION CidsReference
 ENV UPDATE_SNAPSHOTS -U
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
+#WORKDIR ${DATA_DIR}/
+
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \
     && apt-get -y --no-install-recommends install ca-certificates curl gcc libc6-dev libssl-dev make
@@ -49,11 +51,18 @@ RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 
     && update-alternatives --set java "${JRE_HOME}/bin/java" \
     && update-alternatives --set javac "${JAVA_HOME}/bin/javac"
 
+# add letsencrypt certificates (use docker ADD to fetch always the freshest certificate!
+# RUN curl -O --silent --retry 3 https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.der \
+ADD https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.der /tmp
+RUN keytool -import -alias lets-encrypt-x3-cross-signed -keystore ${JRE_HOME}/lib/security/cacerts -file /tmp/lets-encrypt-x3-cross-signed.der -storepass changeit \
+    && rm -f /tmp/lets-encrypt-x3-cross-signed.der
+
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \
     && apt-get install -y postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 COPY lib $MAVEN_LIB_DIR/
+
+# default java policy file
 COPY policy.file ${DATA_DIR}/
-COPY truststore.ks ${DATA_DIR}/
