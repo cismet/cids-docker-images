@@ -59,7 +59,7 @@ RUN keytool -import -alias lets-encrypt-x3-cross-signed -keystore ${JRE_HOME}/li
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \
-    && apt-get install -y postgresql-client \
+    && apt-get install -y postgresql-client zip\
     && rm -rf /var/lib/apt/lists/*
 
 COPY lib $MAVEN_LIB_DIR/

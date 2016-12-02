@@ -9,7 +9,11 @@ umask 0000
 
 PID_FILE=$SERVICE_DIR/$SERVICE.pid
 OUT_FILE=$SERVICE_DIR/$SERVICE.out
-CMD="java -server -XX:+HeapDumpOnOutOfMemoryError -Xms$XMS -Xmx$XMX -D${CIDS_ACCOUNT_EXTENSION}=$SERVICE -Djava.awt.headless=true -Djava.security.policy=${CIDS_DISTRIBUTION_DIR}/policy.file -Dlog4j.configuration=file:log4j.properties -jar $SERVICE $SERVICE_START_OPTIONS"
+
+CMD="java -server -XX:+HeapDumpOnOutOfMemoryError -Xms$XMS -Xmx$XMX -D${CIDS_ACCOUNT_EXTENSION}=$SERVICE -Djava.awt.headless=true -Djava.security.policy=${CIDS_DISTRIBUTION_DIR}/policy.file -Dlog4j.configuration=file:log4j.properties -jar $SERVICE"
+if [ ! -z "$START_OPTIONS" ]; then
+    CMD="$CMD $START_OPTIONS"
+fi 
 
 ### IMPOSTORCHECK 
 # -----------------------------------------------------------------------------------------
