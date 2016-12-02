@@ -11,6 +11,7 @@ LABEL de.cismet.cids.distribution.name="cids-distribution image" \
 # keep DATA_DIR for backwards compatilibity with cids-server-* images
 ENV CIDS_DISTRIBUTION_DIR ${DATA_DIR} 
 ENV CIDS_LIB_DIR ${CIDS_DISTRIBUTION_DIR}/lib
+ENV CIDS_GENERATOR_DIR ${CIDS_DISTRIBUTION_DIR}/gen
 ENV CIDS_SERVER_DIR ${CIDS_DISTRIBUTION_DIR}/server
 ENV CIDS_CLIENT_DIR ${CIDS_DISTRIBUTION_DIR}/client
 
@@ -27,7 +28,7 @@ COPY container_ctl.sh /
 RUN chmod -R +x *.sh \
     && chmod +x /container_ctl.sh
 
-# add /tmp as volume since it may contain data that changes often
-VOLUME /tmp
+# add /tmp as volume since it may contain data that changes often -> in custom images!
+# VOLUME /tmp
 
 ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]

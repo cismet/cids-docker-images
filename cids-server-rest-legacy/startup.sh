@@ -12,7 +12,7 @@ cd ${CIDS_SERVER_REST_LEGACY_DIR}/
 sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION:-CidsReference}#g" pom.xml
 sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" pom.xml
 sed -i -- "s#__DATA_DIR__#${DATA_DIR:-/data/}#g" pom.xml
-mvn -Djavax.net.ssl.trustStore=${DATA_DIR}/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package ${UPDATE_SNAPSHOTS}
+mvn  -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package ${UPDATE_SNAPSHOTS}
 echo '###### START CIDS-SERVER-REST-LEGACY SERVER ######'
 echo 'connecting to cids-server at '${CIDS_SERVER_PORT_9986_TCP_ADDR:-localhost}':'${CIDS_SERVER_PORT_9986_TCP_PORT:-9986}
 cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/runtime.properties ${CIDS_SERVER_REST_LEGACY_DIR}/

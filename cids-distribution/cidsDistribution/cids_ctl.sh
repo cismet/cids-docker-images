@@ -40,7 +40,7 @@ case "$1" in
                     if [[ -z $processId ]]; then
                         echo -e "\e[32mINFO\e[39m: \e[1m$SERVICE\e[0m cids server process in $SERVICE_DIR/ gracefully stopped"
                     else
-                        echo -e "\e[32mWARNING\e[39m: forcibly stopping \e[1m$SERVICE\e[0m cids server process in $SERVICE_DIR/ (PID: $processId)"
+                        echo -e "\e[33mWARN\e[39m: forcibly stopping \e[1m$SERVICE\e[0m cids server process in $SERVICE_DIR/ (PID: $processId)"
                         # run kill command 2 times 
                         for k in 1 2
                             do 

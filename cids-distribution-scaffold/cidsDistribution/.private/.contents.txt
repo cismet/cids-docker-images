@@ -1,0 +1,7 @@
+This is the client configuration directory (host mounted volume). 
+All contents in the image (including this file) will be overlaid by a HOST-MOUNTED DOCKER VOLUME!
+
+
+keystore
+keystore.pwd
+server.pwd
