@@ -15,12 +15,22 @@ ENV CIDS_GENERATOR_DIR ${CIDS_DISTRIBUTION_DIR}/gen
 ENV CIDS_SERVER_DIR ${CIDS_DISTRIBUTION_DIR}/server
 ENV CIDS_CLIENT_DIR ${CIDS_DISTRIBUTION_DIR}/client
 
+# install nginx
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+    && apt-get update \
+    && apt-get -y --no-install-recommends install nginx sysv-rc-conf
+
+RUN sysv-rc-conf nginx off \
+    && apt-get remove --purge --auto-remove -y sysv-rc-conf \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 WORKDIR ${CIDS_DISTRIBUTION_DIR}/
 
 # use .dockerignore to control which files go into the image and which not (faster!)
 COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
 
-COPY container_ctl.sh /
+COPY import/nginx/default /etc/nginx/sites-available/default
+COPY import/container_ctl.sh /
 
 # IMPORTANT: Define the volume in custom images not in the base image!
 # VOLUME ${CIDS_DISTRIBUTION_DIR}/
@@ -30,5 +40,10 @@ RUN chmod -R +x *.sh \
 
 # add /tmp as volume since it may contain data that changes often -> in custom images!
 # VOLUME /tmp
+
+# expose service ports
+EXPOSE 9986
+EXPOSE 8890
+EXPOSE 80
 
 ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]

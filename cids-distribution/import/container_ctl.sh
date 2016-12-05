@@ -3,6 +3,9 @@
 function finish {
     echo -e "\e[32mINFO\e[39m: stopping cids services"
     ${CIDS_DISTRIBUTION_DIR}/cids_ctl.sh stop
+    
+		echo -e "\e[32mINFO\e[39m: stopping nginx"
+    service nginx stop
 }
 
 
@@ -13,6 +16,11 @@ trap finish HUP INT QUIT TERM
 # start service in background here
 echo -e "\e[32mINFO\e[39m: starting cids services"
 ${CIDS_DISTRIBUTION_DIR}/cids_ctl.sh start
+
+echo -e "\e[32mINFO\e[39m: starting nginx"
+sed -i -- "s#__CIDS_DISTRIBUTION_DIR__#${CIDS_DISTRIBUTION_DIR:-/cidsDistribution}#g" pom.xml
+service nginx start
+
 echo -e "\n\033[1m[hit enter key to exit] or run 'docker stop <container>'\n"
 read
 

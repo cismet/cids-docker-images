@@ -43,8 +43,7 @@ RUN mkdir -p ${MAVEN_HOME} \
     && curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC ${MAVEN_HOME} --strip-components=1 \
     && ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
 
-RUN apt-get remove --purge --auto-remove -y gcc libc6-dev libssl-dev make \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get remove --purge --auto-remove -y gcc libc6-dev libssl-dev make
 
 RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 1 \ 
     && update-alternatives --install "/usr/bin/javac" "javac" "${JAVA_HOME}/bin/javac" 1 \
@@ -60,7 +59,7 @@ RUN keytool -import -alias lets-encrypt-x3-cross-signed -keystore ${JRE_HOME}/li
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \
     && apt-get install -y postgresql-client zip\
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY lib $MAVEN_LIB_DIR/
 
