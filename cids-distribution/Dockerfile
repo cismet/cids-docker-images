@@ -20,7 +20,9 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     && apt-get update \
     && apt-get -y --no-install-recommends install nginx sysv-rc-conf
 
-RUN sysv-rc-conf nginx off \
+RUN sysv-rc-conf --list nginx \
+    && sysv-rc-conf nginx off \
+    && sysv-rc-conf --list nginx \
     && apt-get remove --purge --auto-remove -y sysv-rc-conf \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
