@@ -1,13 +1,15 @@
 #!/bin/bash
 
 if [[ -z $1 || -z $2 || -z $3 ]] ; then
-    echo "Usage: $0 {SERVICE_DIR} {STARTER_JAR} {SERVICE}"
+   echo -e "\e[31mERROR\e[39m: Usage: $0 {SERVICE_DIR} {STARTER_JAR} {SERVICE}"
     exit 1
 fi
 
 SERVICE_DIR=$1
 STARTER_JAR=$2
 SERVICE=$3
+
+umask 0000
 
 mkdir -p .impostor.tmp
 cd .impostor.tmp
