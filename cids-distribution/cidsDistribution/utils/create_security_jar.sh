@@ -17,8 +17,10 @@ elif [[ -f ${CIDS_DISTRIBUTION_DIR}/.private/keystore && ${CIDS_DISTRIBUTION_DIR
     mkdir -p JNLP-INF
     cp $JNLP_FILE JNLP-INF/APPLICATION.JNLP
 
-    printf "Permissions: all-permission" > MANIFEST.TXT
-    printf "Trusted-Only: true" >> MANIFEST.TXT
+    printf "Permissions: all-permission\n" > MANIFEST.TXT
+    printf "Codebase: *\n" >> MANIFEST.TXT
+    printf "Trusted-Only: true\n" >> MANIFEST.TXT
+    printf "\n" >> MANIFEST.TXT
 
     jar -cfmv $JNLP_BASE-security.jar MANIFEST.TXT JNLP-INF
     ${CIDS_DISTRIBUTION_DIR}/utils/sign.sh ${CIDS_DISTRIBUTION_DIR}/.private/keystore `cat ${CIDS_DISTRIBUTION_DIR}/.private/keystore.pwd` $JNLP_BASE-security.jar

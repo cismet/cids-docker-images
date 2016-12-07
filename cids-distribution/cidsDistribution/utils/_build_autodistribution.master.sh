@@ -9,7 +9,9 @@ if [[ -f ${CIDS_GENERATOR_DIR}/settings.xml ]]; then
         KEYSTORE="${CIDS_DISTRIBUTION_DIR}/.private/keystore"
         KEYSTORE_PASSWORD=$(cat ${CIDS_DISTRIBUTION_DIR}/.private/keystore.pwd)
 
-        sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/cidsDistribution/lib/m2/}#g" ${CIDS_GENERATOR_DIR}/settings.xml
+        #env vars can be substituted in pom.xml and settings.xml with <m2codebase>${env.MAVEN_LIB_DIR}</m2codebase>-
+        #sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/cidsDistribution/lib/m2/}#g" ${CIDS_GENERATOR_DIR}/settings.xml
+        
         sed -i -- "s#__KEYSTORE__#$KEYSTORE#g" ${CIDS_GENERATOR_DIR}/settings.xml
         sed -i -- "s#__KEYSTORE_PASSWORD__#$KEYSTORE_PASSWORD#g" ${CIDS_GENERATOR_DIR}/settings.xml
         sed -i -- "s#__SERVER_USERNAME__#$SERVER_USERNAME#g" ${CIDS_GENERATOR_DIR}/settings.xml
@@ -21,9 +23,9 @@ if [[ -f ${CIDS_GENERATOR_DIR}/settings.xml ]]; then
                 if [[ -f pom.xml ]]; then
                     echo -e "\e[32mINFO\e[39m: Building cids auto distribution \e[1m$GENERATOR_DIR\e[0m"
 
-                    sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION}#g" pom.xml
-                    sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/cidsDistribution/lib/m2/}#g" pom.xml
-                    sed -i -- "s#__DATA_DIR__#${CIDS_DISTRIBUTION_DIR:-/cidsDistribution/}#g" pom.xml
+                    #sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION}#g" pom.xml
+                    #sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/cidsDistribution/lib/m2/}#g" pom.xml
+                    #sed -i -- "s#__DATA_DIR__#${CIDS_DISTRIBUTION_DIR:-/cidsDistribution/}#g" pom.xml
                     
                     CMD="mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${CIDS_GENERATOR_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false ${MAVEN_BUID_COMMAND:-clean package} ${UPDATE_SNAPSHOTS}"
                     echo -e "\e[32m$CMD\e[39m"
