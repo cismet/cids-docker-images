@@ -9,4 +9,4 @@ LABEL de.cismet.cids.distribution.cache.name="cids-distribution-cache image" \
 # use .dockerignore to control which files go into the image and which not (faster!)
 # must contain signed artifacts!
 COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
-RUN touch ${CIDS_LIB_DIR}/.signed
+RUN touch ${MAVEN_LIB_DIR}/.signed
