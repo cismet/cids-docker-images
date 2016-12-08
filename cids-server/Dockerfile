@@ -1,6 +1,10 @@
-FROM cismet/cids-java-maven
+FROM cismet/cids-java-maven:latest
 
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
+
+LABEL de.cismet.cids.server.name="server runtime image" \
+      de.cismet.cids.server.version="cidsServer-1.0" \
+      de.cismet.cids.server.descripton="Generic cids-server Runtime Image for local testing and integration tests" 
 
 ENV PGPASSWORD postgres
 ENV CIDS_SERVER_IMPORT_DIR ${IMPORT_DIR}/cids-server

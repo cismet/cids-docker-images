@@ -1,6 +1,10 @@
-FROM cismet/cids-java-maven
+FROM cismet/cids-java-maven:latest
 
 MAINTAINER Pascal Dihé <pascal.dihe@cismet.de>
+
+LABEL de.cismet.cids.server.rest.legacy.name="cids server rest legacy runtime image" \
+      de.cismet.cids.server.rest.legacy.version="1.0" \
+      de.cismet.cids.server.rest.legacy.descripton="Generic cids-server-rest-legacy Runtime Image for local testing and integration tests" 
 
 ENV CIDS_SERVER_REST_LEGACY_IMPORT_DIR ${IMPORT_DIR}/cids-server-rest-legacy
 ENV CIDS_SERVER_REST_LEGACY_DIR ${DATA_DIR}/cids-server-rest-legacy

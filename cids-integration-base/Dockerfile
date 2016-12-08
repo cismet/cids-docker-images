@@ -3,8 +3,8 @@ FROM ubuntu:trusty
 MAINTAINER Jean-Michel Ruiz "jean.ruiz@cismet.de"
 
 LABEL de.cismet.cids.integration.base.name="cids-integration-base PostgeSQL image" \
-      de.cismet.cids.integration.base.version="postgres-9.6.1-1.0" \
-      de.cismet.cids.integration.base.descripton="PostgeSQL Runtime Image" 
+      de.cismet.cids.integration.base.version="postgres-9.6.1-2.0" \
+      de.cismet.cids.integration.base.descripton="PostgeSQL Runtime Image v2" 
 
 # ENV
 ENV POSTGRES_PASSWORD postgres
@@ -107,8 +107,10 @@ RUN groupadd postgres \
 
 COPY cidsIntegrationBase ${CIDS_INTEGRATION_BASE_DIR}
 
-# update postgres data directory
-RUN chown postgres:postgres ${PG_DATA_DIR} \
+# create pg_data directory
+RUN mkdir -p ${PG_DATA_DIR} \
+    && echo ${PG_DATA_DIR} \
+    && chown postgres:postgres ${PG_DATA_DIR} \
     && chmod 700 ${PG_DATA_DIR}
 
 USER postgres
@@ -153,10 +155,6 @@ EXPOSE 5432
 
 COPY import/cidsIntegrationBase import/cidsIntegrationBase
 COPY import/container_ctl.sh /
-
-# copy startup script
-COPY startup.sh /tmp/
-RUN chmod +x /tmp/startup.sh
 
 # start
 ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]

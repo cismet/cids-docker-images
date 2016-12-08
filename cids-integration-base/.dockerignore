@@ -1,2 +1,4 @@
 **/.gitignore 
 build.sh
+import/cidsIntegrationBase
+cidsIntegrationBase/pg_data
