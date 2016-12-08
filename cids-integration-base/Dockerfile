@@ -8,11 +8,12 @@ LABEL de.cismet.cids.integration.base.name="cids-integration-base PostgeSQL imag
 
 # ENV
 ENV POSTGRES_PASSWORD postgres
-ENV DATA_DIR /data
-ENV IMPORT_DIR /import
-ENV CIDS_INTEGRATION_BASE_DIR ${DATA_DIR}/cids-integration-base
-# .sql files in the dumps folder are imported upon start -> docker-volumes
-ENV CIDS_INTEGRATION_BASE_IMPORT_DIR ${IMPORT_DIR}/cids-integration-base
+ENV CIDS_INTEGRATION_BASE_DIR /cidsIntegrationBase
+ENV PG_DATA_DIR ${CIDS_INTEGRATION_BASE_DIR}/pg_data
+# files in the dumps folder are imported upon start from docker-volumes
+# if start parameter import is set
+ENV IMPORT_DIR /import/cidsIntegrationBase
+
 ENV PG_VERSION 9.6.1
 ENV GEOS_VERSION 3.6.0
 ENV PROJ4_VERSION 4.9.3
@@ -104,20 +105,11 @@ RUN groupadd postgres \
     && useradd -r postgres -g postgres \
     && echo "postgres:${POSTGRES_PASSWORD}" | chpasswd -e
 
-# create common data directory
-RUN mkdir -p ${DATA_DIR} \
-    && echo ${DATA_DIR} \
-# create common import directory
-    && mkdir -p ${IMPORT_DIR} \
-    && echo ${IMPORT_DIR} \
-# create dumps directory
-    && mkdir -p ${CIDS_INTEGRATION_BASE_IMPORT_DIR} \
-    && echo ${CIDS_INTEGRATION_BASE_IMPORT_DIR} \
-# create postgres data directory
-    && mkdir -p ${CIDS_INTEGRATION_BASE_DIR} \
-    && echo ${CIDS_INTEGRATION_BASE_DIR}
-RUN chown postgres:postgres ${CIDS_INTEGRATION_BASE_DIR} \
-    && chmod 700 ${CIDS_INTEGRATION_BASE_DIR}
+COPY cidsIntegrationBase ${CIDS_INTEGRATION_BASE_DIR}
+
+# update postgres data directory
+RUN chown postgres:postgres ${PG_DATA_DIR} \
+    && chmod 700 ${PG_DATA_DIR}
 
 USER postgres
 # initdb
@@ -128,22 +120,22 @@ RUN initdb \
   --lc-monetary=${LOCALE}.${ENCODING} \
   --lc-numeric=${LOCALE}.${ENCODING} \
   --lc-time=${LOCALE}.${ENCODING} \
-  -D ${CIDS_INTEGRATION_BASE_DIR}
+  -D ${PG_DATA_DIR}
 
 USER root
 # conf
-RUN echo "host all all 0.0.0.0/0 md5" >> $CIDS_INTEGRATION_BASE_DIR/pg_hba.conf \
-    && echo "listen_addresses='*'" >> $CIDS_INTEGRATION_BASE_DIR/postgresql.conf
+RUN echo "host all all 0.0.0.0/0 md5" >> ${PG_DATA_DIR}/pg_hba.conf \
+    && echo "listen_addresses='*'" >> ${PG_DATA_DIR}/postgresql.conf
 
 USER postgres
-RUN pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} start \
+RUN pg_ctl -w -D ${PG_DATA_DIR} start \
 # set password
   && psql -c "alter role postgres password '${POSTGRES_PASSWORD}'" \
   && createdb template_postgis \
 # postgis template
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/postgis/postgis.sql \
   && psql template_postgis -f src/postgis-${POSTGIS_VERSION}/spatial_ref_sys.sql \
-  && pg_ctl -w -D ${CIDS_INTEGRATION_BASE_DIR} stop
+  && pg_ctl -w -D ${PG_DATA_DIR} stop
 
 USER root
 # clean up
@@ -154,14 +146,17 @@ RUN apt-get remove --purge --auto-remove -y build-essential gcc-4.7 libreadline6
 EXPOSE 5432
 
 # data volume: disabled -> it should be mounted when creating the container!
-# VOLUME ${DATA_DIR}
+# VOLUME ${PG_DATA_DIR}
 # It is important to do it in the right order, because the files inside the container 
 # are only copied to the volume by the first container that uses it (and the volume is still empty)
 # The VOLUME instruction in a Dockerfile will add one or more new volumes to any containers created from the image.
+
+COPY import/cidsIntegrationBase import/cidsIntegrationBase
+COPY import/container_ctl.sh /
 
 # copy startup script
 COPY startup.sh /tmp/
 RUN chmod +x /tmp/startup.sh
 
 # start
-CMD /tmp/startup.sh
+ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]

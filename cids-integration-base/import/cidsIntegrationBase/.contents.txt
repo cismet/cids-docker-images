@@ -1,0 +1,7 @@
+This directory contains dumps that are imported into the PostgreSQL data base upon
+container creation (run) when the 'import' flag is set. (host-mounted volume)
+
+The contents of this directory are overlaid by a host-mounted volume that contains 
+the actual dump files. 
+
+WARNING: Existing databases in pg_data (data volume) are deleted! 

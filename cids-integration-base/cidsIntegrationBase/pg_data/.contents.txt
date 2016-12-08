@@ -1,0 +1,4 @@
+The actual PostgreSQL data directory. (in data volume)
+
+This directory is mounted as *named volume* 
+(in docker-compose.yaml or run_container.sh), thus the data is stored on the host directly!

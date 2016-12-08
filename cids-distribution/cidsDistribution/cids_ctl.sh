@@ -75,6 +75,6 @@ case "$1" in
     *)
 	echo "Usage: $0 {start|stop|restart} {SERVICE (optional)}"
 	exit 1
-;;
+    ;;
 
 esac
