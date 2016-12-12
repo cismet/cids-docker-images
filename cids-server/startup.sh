@@ -3,6 +3,8 @@
 echo '###### CHECKING CIDS INTEGRATION BASE CONTAINER ######'
 if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then
     echo "You must link this container with a CIDS_INTEGRATION_BASE container first"
+    export
+    cat /etc/hosts
     exit 1
 fi
 echo '###### BUILD CIDS-SERVER DISTRIBUTION ######'

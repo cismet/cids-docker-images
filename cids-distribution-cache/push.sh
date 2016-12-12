@@ -7,4 +7,4 @@
 #docker images
 
 docker login
-docker push pdihe/cismet/cids-distribution-cache:latest
+docker push cismet/cids-distribution-cache:latest

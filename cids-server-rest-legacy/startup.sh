@@ -3,6 +3,8 @@
 echo '###### CHECKING CIDS SERVER CONTAINER ######'
 if test -z "${CIDS_SERVER_PORT_9986_TCP_ADDR}" -o -z "${CIDS_SERVER_PORT_9986_TCP_PORT}"; then
     echo "You must link this container with a CIDS-SERVER container first"
+    export
+    cat /etc/hosts
     exit 1
 fi
 echo '###### BUILD CIDS-SERVER-REST-LEGACY DISTRIBUTION ######'

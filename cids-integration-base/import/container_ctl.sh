@@ -6,10 +6,11 @@ function finish {
 
 trap finish HUP INT QUIT TERM
 
-${CIDS_INTEGRATION_BASE_DIR}/cids_ctl.sh start $1
+echo -e "\e[32mINFO\e[39m: Starting container (arguments: $1, $2)"
+${CIDS_INTEGRATION_BASE_DIR}/cids_ctl.sh $1 $2
 
-echo -e "\n\033[1m[hit enter key to exit] or run 'docker stop <container>'\n"
-read
+echo -e "\n\e[32mhit [CTRL+C] to exit or run 'docker stop <container>'\e[39m:\n"
+sleep infinity
 
 # stop service and clean up here
 finish

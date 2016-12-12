@@ -108,7 +108,8 @@ RUN groupadd postgres \
 COPY cidsIntegrationBase ${CIDS_INTEGRATION_BASE_DIR}
 
 # create pg_data directory
-RUN mkdir -p ${PG_DATA_DIR} \
+RUN mkdir -p import/cidsIntegrationBase \
+    && mkdir -p ${PG_DATA_DIR} \
     && echo ${PG_DATA_DIR} \
     && chown postgres:postgres ${PG_DATA_DIR} \
     && chmod 700 ${PG_DATA_DIR}
@@ -153,8 +154,10 @@ EXPOSE 5432
 # are only copied to the volume by the first container that uses it (and the volume is still empty)
 # The VOLUME instruction in a Dockerfile will add one or more new volumes to any containers created from the image.
 
-COPY import/cidsIntegrationBase import/cidsIntegrationBase
 COPY import/container_ctl.sh /
 
+WORKDIR ${CIDS_INTEGRATION_BASE_DIR}
+
 # start
-ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]
+ENTRYPOINT ["/container_ctl.sh"]
+CMD ["start"]

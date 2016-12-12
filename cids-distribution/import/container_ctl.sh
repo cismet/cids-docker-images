@@ -51,8 +51,8 @@ echo -e "\e[32mINFO\e[39m: starting nginx"
 sed -i -- "s#__CIDS_DISTRIBUTION_DIR__#${CIDS_DISTRIBUTION_DIR:-/cidsDistribution}#g" /etc/nginx/sites-available/default
 service nginx start
 
-echo -e "\n\033[1m[hit enter key to exit] or run 'docker stop <container>'\n"
-read
+echo -e "\n\e[32mhit [CTRL+C] to exit or run 'docker stop <container>'\e[39m:\n"
+sleep infinity
 
 # stop service and clean up here
 finish
