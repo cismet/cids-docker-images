@@ -28,8 +28,8 @@ case "$1" in
             ${CIDS_INTEGRATION_BASE_DIR}/utils/import.sh
         fi
 
-        touch //tmp/isready.csv
-        echo -e "\e[32mINFO\e[39m: cids integrationbase PostgreSQL service running"
+        touch /tmp/isready.csv
+        echo -e "\e[32m$(date)\e[39m: cids integrationbase PostgreSQL service running"
      ;;
     
     restart)
@@ -45,7 +45,7 @@ case "$1" in
         fi
 
         touch /tmp/isready.csv
-        echo -e "\e[32mINFO\e[39m: cids integrationbase PostgreSQL service restarted"
+        echo -e "\e[32m$(date)\e[39m: cids integrationbase PostgreSQL service restarted"
     ;;
 
     *)

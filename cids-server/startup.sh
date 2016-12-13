@@ -1,8 +1,12 @@
 #!/bin/bash
 
+# Environment variables are no longer the recommended method for connecting to linked services. 
+# Instead, you should use the link name (by default, the name of the linked service) as the hostname to connect to. 
+# See the docker-compose.yml documentation for details.
+# Environment variables will only be populated if you’re using the legacy version 1 Compose file format.
 echo '###### CHECKING CIDS INTEGRATION BASE CONTAINER ######'
 if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then
-    echo "You must link this container with a CIDS_INTEGRATION_BASE container first"
+    echo -e "\e[31mERROR\e[39m: You must link this container with a CIDS_INTEGRATION_BASE container first"
     export
     cat /etc/hosts
     exit 1
@@ -23,17 +27,17 @@ is_ready() {
 }
 i=0
 while ! is_ready;
-do
+do 
     i=`expr $i + 1`
-    if [ $i -ge 10 ]; then
-        echo "$(date) - cids integration base container still not ready, giving up"
+    if [ $i -ge 20 ]; then
+        echo -e "\e[31mERROR\e[39m: $(date) - cids integration base PostgreSQL (${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}:${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}) service still not ready, giving up"
         exit 1
     fi
-    echo "$(date) - waiting for cids integration base to be ready"
-    sleep 6
+    echo -e "\e[33mWARN\e[39m: $(date) - waiting for cids integration base PostgreSQL service (${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}:${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}) to be ready"
+    sleep 15
 done
 echo '###### START LEGACY CIDS-SERVER ######'
-echo 'connecting to cids Integration Base at '${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}
+echo -e '\e[32mINFO\e[39m: connecting to cids Integration Base at '${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}':'${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}
 cp ${CIDS_SERVER_IMPORT_DIR}/runtime.properties ${CIDS_SERVER_DIR}/
 sed -i -- "s/__DB_HOST__/${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-localhost}/g" ${CIDS_SERVER_DIR}/runtime.properties
 sed -i -- "s/__DB_PORT__/${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}/g" ${CIDS_SERVER_DIR}/runtime.properties

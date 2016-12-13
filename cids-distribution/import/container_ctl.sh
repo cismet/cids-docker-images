@@ -16,6 +16,11 @@ function is_ready {
 #     or need to start multiple services in the one container
 trap finish HUP INT QUIT TERM
 
+# FIXME!
+# Environment variables are no longer the recommended method for connecting to linked services. 
+# Instead, you should use the link name (by default, the name of the linked service) as the hostname to connect to. 
+# See the docker-compose.yml documentation for details.
+# Environment variables will only be populated if you’re using the legacy version 1 Compose file format.
 echo -e "\e[32mINFO\e[39m: ###### CHECKING CIDS INTEGRATION BASE CONTAINER ######"
 if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then
     echo -e "\e[33mWARN\e[39m: Container not linked with PostgreSQL container cids-integration-base"
@@ -25,12 +30,12 @@ else
     while ! is_ready;
     do 
         i=`expr $i + 1`
-        if [ $i -ge 10 ]; then
+        if [ $i -ge 20 ]; then
             echo -e "\e[31mERROR\e[39m: $(date) - cids integration base PostgreSQL (${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}:${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}) service still not ready, giving up"
             exit 1
         fi
         echo -e "\e[33mWARN\e[39m: $(date) - waiting for cids integration base PostgreSQL service (${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}:${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}) to be ready"
-        sleep 6
+        sleep 15
     done
 fi
 
