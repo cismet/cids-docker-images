@@ -44,4 +44,12 @@ sed -i -- "s/__DB_PORT__/${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}/g" ${
 cp ${CIDS_SERVER_IMPORT_DIR}/log4j.properties ${CIDS_SERVER_DIR}/
 sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${CIDS_SERVER_DIR}/log4j.properties
 sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${CIDS_SERVER_DIR}/log4j.properties
-/usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=file:${CIDS_SERVER_DIR}/log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/cids-server-2.0-SNAPSHOT-starter.jar ${CIDS_SERVER_DIR}/runtime.properties
+
+CMD="java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=file:${CIDS_SERVER_DIR}/log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/${CIDS_SERVER_STARTER:-cids-server-2.0-SNAPSHOT-starter.jar}"
+if [ ! -z "${CIDS_SERVER_START_OPTIONS}" ]; then
+    CMD="$CMD ${CIDS_SERVER_START_OPTIONS}"
+fi 
+
+echo -e "\e[32mINFO\e[39m: $CMD"
+
+$CMD #2> ${CIDS_SERVER_DIR}/cids-server-${CIDS_ACCOUNT_EXTENSION}.err > ${CIDS_SERVER_DIR}/cids-server-${CIDS_ACCOUNT_EXTENSION}.log
