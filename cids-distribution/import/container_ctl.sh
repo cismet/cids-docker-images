@@ -3,9 +3,11 @@
 function finish {
     echo -e "\e[32mINFO\e[39m: stopping cids services"
     ${CIDS_DISTRIBUTION_DIR}/cids_ctl.sh stop
+    echo -e "\e[32mINFO\e[39m: cids services stopped"
     
     echo -e "\e[32mINFO\e[39m: stopping nginx"
     service nginx stop
+    echo -e "\e[32mINFO\e[39m: nginx stopped"
 }
 
 function is_ready {
@@ -59,6 +61,4 @@ service nginx start
 echo -e "\n\e[32mhit [CTRL+C] to exit or run 'docker stop <container>'\e[39m:\n"
 sleep infinity
 
-# stop service and clean up here
-finish
 echo -e "\e[32mINFO\e[39m: exited $0"
