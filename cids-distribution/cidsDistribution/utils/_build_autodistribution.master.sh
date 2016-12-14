@@ -23,6 +23,7 @@ if [[ -f ${CIDS_GENERATOR_DIR}/settings.xml ]]; then
                 if [[ -f pom.xml ]]; then
                     echo -e "\e[32mINFO\e[39m: Building cids auto distribution \e[1m$GENERATOR_DIR\e[0m"
 
+                    # sed not needed, we use variable subsitution inside pom.xml
                     #sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION}#g" pom.xml
                     #sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/cidsDistribution/lib/m2/}#g" pom.xml
                     #sed -i -- "s#__DATA_DIR__#${CIDS_DISTRIBUTION_DIR:-/cidsDistribution/}#g" pom.xml

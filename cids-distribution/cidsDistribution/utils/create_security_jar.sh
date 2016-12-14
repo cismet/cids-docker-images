@@ -10,16 +10,20 @@ elif [[ -f ${CIDS_DISTRIBUTION_DIR}/.private/keystore && ${CIDS_DISTRIBUTION_DIR
     umask 0000
 
     sed -i -- "s/local${CIDS_ACCOUNT_EXTENSION}\/security-jar-template.jar\"/classpath${CIDS_ACCOUNT_EXTENSION}\/$JNLP_BASE-security.jar\" main=\"true\"/g" $JNLP_FILE
-
+    
     rm -rf JNLP-INF 2>> /dev/null
     rm -f MANIFEST.TXT 2>> /dev/null
 
     mkdir -p JNLP-INF
     cp $JNLP_FILE JNLP-INF/APPLICATION.JNLP
 
-    printf "Permissions: all-permission\n" > MANIFEST.TXT
-    printf "Codebase: *\n" >> MANIFEST.TXT
-    printf "Trusted-Only: true\n" >> MANIFEST.TXT
+    printf "Permissions: all-permissions\n" > MANIFEST.TXT
+    printf "Codebase: ${CIDS_CODEBASE} \n" >> MANIFEST.TXT
+    printf "Caller-Allowable-Codebase: ${CIDS_CODEBASE}\n" >> MANIFEST.TXT
+    printf "Application-Library-Allowable-Codebase: ${CIDS_CODEBASE}\n" >> MANIFEST.TXT
+    printf "Application-Name: cids Navigator\n" >> MANIFEST.TXT
+    #printf "Trusted-Only: true\n" >> MANIFEST.TXT
+    printf "Sealed: true\n" >> MANIFEST.TXT
     printf "\n" >> MANIFEST.TXT
 
     jar -cfmv $JNLP_BASE-security.jar MANIFEST.TXT JNLP-INF

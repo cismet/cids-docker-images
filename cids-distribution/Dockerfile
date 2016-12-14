@@ -6,8 +6,10 @@ LABEL de.cismet.cids.distribution.name="cids-distribution image" \
       de.cismet.cids.distribution.version="cidsDistribution-1.0" \
       de.cismet.cids.distribution.descripton="General abstract cids distribution Runtime Image" 
 
-# set account extension to empty string
-# ENV CIDS_ACCOUNT_EXTENSION=""
+# override account extension and codebase in child autodistribution images!
+ENV CIDS_ACCOUNT_EXTENSION CidsDistribution
+ENV CIDS_CODEBASE http://localhost
+
 # keep DATA_DIR for backwards compatilibity with cids-server-* images
 ENV CIDS_DISTRIBUTION_DIR ${DATA_DIR} 
 ENV CIDS_LIB_DIR ${CIDS_DISTRIBUTION_DIR}/lib
@@ -43,9 +45,9 @@ RUN chmod -R +x *.sh \
 # add /tmp as volume since it may contain data that changes often -> in custom images!
 # VOLUME /tmp
 
-# expose service ports
-EXPOSE 9986
-EXPOSE 8890
-EXPOSE 80
+# expose service ports in chuild images!
+#EXPOSE 9986
+#EXPOSE 8890
+#EXPOSE 80
 
 ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]

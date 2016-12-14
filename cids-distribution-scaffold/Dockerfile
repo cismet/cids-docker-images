@@ -19,4 +19,13 @@ COPY cidsDistribution ${CIDS_DISTRIBUTION_DIR}/
 COPY cidsDistribution/lib/.local.templates ${CIDS_DISTRIBUTION_DIR}/lib/local/
 RUN rm -rf ${CIDS_DISTRIBUTION_DIR}/lib/.local.templates
 
+# expose cids-server port
+EXPOSE 9986
+
+# expose cids-server-rest port
+EXPOSE 8890
+
+# expose ngnix port
+EXPOSE 80
+
 #ENTRYPOINT /bin/bash
