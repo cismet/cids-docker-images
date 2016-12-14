@@ -15,15 +15,13 @@ jarsigner_output=$(jarsigner -strict -verify -keystore $KEYSTORE -storepass $STO
 if [[ $? -eq 0 && $jarsigner_output != *"jar is unsigned."* && $jarsigner_output != *"no manifest."* ]]; then
     echo -e "\e[32mINFO\e[39m: \e[1m$JARFILE\e[0m is already signed with cismet certificate"
 else
+    rm -f MANIFEST.TXT 2>> /dev/null
+    printf "Permissions: all-permissions \n" > MANIFEST.TXT
+    printf "Codebase: * \n" >> MANIFEST.TXT
+    printf "\n" >> MANIFEST.TXT
+
     if [[ $jarsigner_output == *"no manifest."* ]]; then
         echo -e "\e[33mWARNING\e[39m: \e[1m$JARFILE\e[0m does not contain a MANIFEST, updating JAR"
-        rm -f MANIFEST.TXT 2>> /dev/null
-        printf "Permissions: all-permission\n" > MANIFEST.TXT
-        printf "Codebase: *\n" >> MANIFEST.TXT
-        printf "\n" >> MANIFEST.TXT
-
-        jar -ufm $JARFILE MANIFEST.TXT
-        rm -f MANIFEST.TXT 2>> /dev/null
     fi
 
     if [[ $jarsigner_output == *"jar is unsigned."* ]]; then
@@ -33,5 +31,9 @@ else
         zip -q -d $JARFILE META-INF/\*.SF META-INF/\*.RSA META-INF/\*.DSA 2>> /dev/null >> /dev/null
     fi
     
+    # update all jars and set permission and codebase attribute
+    jar -ufm $JARFILE MANIFEST.TXT  
     jarsigner -tsa http://sha256timestamp.ws.symantec.com/sha256/timestamp -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet
+
+    rm -f MANIFEST.TXT 2>> /dev/null
 fi
