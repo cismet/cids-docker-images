@@ -18,12 +18,12 @@ elif [[ -f ${CIDS_DISTRIBUTION_DIR}/.private/keystore && ${CIDS_DISTRIBUTION_DIR
     cp $JNLP_FILE JNLP-INF/APPLICATION.JNLP
 
     printf "Permissions: all-permissions\n" > MANIFEST.TXT
-    printf "Codebase: * \n" >> MANIFEST.TXT
-    #printf "Caller-Allowable-Codebase: * \n" >> MANIFEST.TXT
-    #printf "Application-Library-Allowable-Codebase: * \n" >> MANIFEST.TXT
+    printf "Codebase: *\n" >> MANIFEST.TXT
+    printf "Caller-Allowable-Codebase: *\n" >> MANIFEST.TXT
+    printf "Application-Library-Allowable-Codebase: *\n" >> MANIFEST.TXT
     printf "Application-Name: cids Navigator\n" >> MANIFEST.TXT
-    #printf "Trusted-Only: true\n" >> MANIFEST.TXT
-    #printf "Sealed: true\n" >> MANIFEST.TXT
+    printf "Trusted-Only: true\n" >> MANIFEST.TXT
+    printf "Sealed: true\n" >> MANIFEST.TXT
     printf "\n" >> MANIFEST.TXT
 
     jar -cfmv $JNLP_BASE-security.jar MANIFEST.TXT JNLP-INF

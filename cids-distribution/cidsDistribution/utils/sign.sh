@@ -16,8 +16,8 @@ if [[ $? -eq 0 && $jarsigner_output != *"jar is unsigned."* && $jarsigner_output
     echo -e "\e[32mINFO\e[39m: \e[1m$JARFILE\e[0m is already signed with cismet certificate"
 else
     rm -f MANIFEST.TXT 2>> /dev/null
-    printf "Permissions: all-permissions \n" > MANIFEST.TXT
-    printf "Codebase: * \n" >> MANIFEST.TXT
+    printf "Permissions: all-permissions\n" > MANIFEST.TXT
+    printf "Codebase: *\n" >> MANIFEST.TXT
     printf "\n" >> MANIFEST.TXT
 
     if [[ $jarsigner_output == *"no manifest."* ]]; then
@@ -32,8 +32,13 @@ else
     fi
     
     # update all jars and set permission and codebase attribute
-    jar -ufm $JARFILE MANIFEST.TXT  
+    # ignore warnings about duplicate attributes
+    jar -ufm $JARFILE MANIFEST.TXT 2> /dev/null
+    
     jarsigner -tsa http://sha256timestamp.ws.symantec.com/sha256/timestamp -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet
+
+    # faster without tsa
+    #jarsigner -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet
 
     rm -f MANIFEST.TXT 2>> /dev/null
 fi
