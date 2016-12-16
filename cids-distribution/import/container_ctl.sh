@@ -45,7 +45,7 @@ echo -e "\e[32mINFO\e[39m: ###### UPDATING SERVER CONFIGURATION ######"
 ${CIDS_DISTRIBUTION_DIR}/utils/update_configuration.sh
 
 echo -e "\e[32mINFO\e[39m: ###### UPDATING CLIENT CONFIGURATION ######"
-# copy JNLP genenrated when image was built to the client dir on the host-mounted volume
+# copy JNLP generated when image was built to the client dir on the host-mounted volume!
 umask 0000
 find ${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/ -name "*.jnlp" -type f -exec cp {} ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,}/ \;
 

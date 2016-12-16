@@ -34,6 +34,8 @@ if [[ -f ${IMPORT_DIR}/roles/roles.sql ]]; then
     psql -U postgres postgres < ${IMPORT_DIR}/roles/roles.sql;
 fi
 
+umask 0000
+
 for DUMP_FULL_PATH in ${IMPORT_DIR}/dumps/*.gz; do 
     if [[ -f ${DUMP_FULL_PATH} ]]; then
         echo -e "\e[32mINFO\e[39m: processing ${DUMP_FULL_PATH}"
