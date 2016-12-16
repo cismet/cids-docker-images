@@ -11,7 +11,7 @@ export CIDS_STARTER_DIR=${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}
 ### FUNCTIONS 
 # -----------------------------------------------------------------------------------------
 
-pattern='^[0-9]{3}-.+$'
+pattern='^[0-9]{3}_.+$'
 cd $CIDS_SERVER_DIR
 
 case "$1" in
