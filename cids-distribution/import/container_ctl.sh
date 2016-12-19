@@ -27,7 +27,7 @@ echo -e "\e[32mINFO\e[39m: ###### CHECKING CIDS INTEGRATION BASE CONTAINER #####
 if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then
     echo -e "\e[33mWARN\e[39m: Container not linked with PostgreSQL container cids-integration-base"
 else
-    echo -e "\e[32mINFO\e[39m: container linked with PostgreSQL container cids-integration-base"
+    echo -e "\e[32mINFO\e[39m: container linked with PostgreSQL container cids-integration-base (${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}:${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT})"
     i=0
     while ! is_ready;
     do 
@@ -47,7 +47,15 @@ ${CIDS_DISTRIBUTION_DIR}/utils/update_configuration.sh
 echo -e "\e[32mINFO\e[39m: ###### UPDATING CLIENT CONFIGURATION ######"
 # copy JNLP generated when image was built to the client dir on the host-mounted volume!
 umask 0000
-find ${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/ -name "*.jnlp" -type f -exec cp {} ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,}/ \;
+
+if [[ -d ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,} ]]; then
+    # Autodistibution: subdir ${CIDS_ACCOUNT_EXTENSION,,} below client dir
+    echo -e "\e[32mINFO\e[39m: Copy JNLP files to host mounted volume ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,}/"
+    find ${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/ -name "*.jnlp" -type f -exec cp {} ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,}/ \;
+else
+    echo -e "\e[32mINFO\e[39m: Copy JNLP files to host mounted volume ${CIDS_CLIENT_DIR}/"
+    find ${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/ -name "*.jnlp" -type f -exec cp {} ${CIDS_CLIENT_DIR}/ \;
+fi
 
 echo -e "\e[32mINFO\e[39m: ###### STARTING SERVICES ######"
 # start service in background here

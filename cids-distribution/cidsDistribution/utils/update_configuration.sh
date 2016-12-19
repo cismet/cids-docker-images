@@ -19,8 +19,8 @@ for SERVICE_DIR in *; do
         fi
 
         if grep -q __LOG4J_HOST__ "${SERVICE_DIR}/log4j.properties" || grep -q __LOG4J_PORT__ "${SERVICE_DIR}/log4j.properties" ; then
-            echo -e "\e[32mINFO\e[39m: Updating ${CIDS_SERVER_DIR}/log4j.properties remote LOG4J host with ${LOG4J_HOST:-localhost}:${LOG4J_PORT:-4445}"
-            sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${SERVICE_DIR}/log4j.properties 2>> /dev/null
+            echo -e "\e[32mINFO\e[39m: Updating ${CIDS_SERVER_DIR}/log4j.properties remote LOG4J host with ${LOG4J_HOST:-$DOCKER_HOST_IP}:${LOG4J_PORT:-4445}"
+            sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-$DOCKER_HOST_IP}/g" ${SERVICE_DIR}/log4j.properties 2>> /dev/null
             sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${SERVICE_DIR}/log4j.properties 2>> /dev/null
         fi
     fi
