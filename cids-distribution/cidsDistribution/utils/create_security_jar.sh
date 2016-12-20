@@ -25,7 +25,7 @@ elif [[ -f ${CIDS_DISTRIBUTION_DIR}/.private/keystore && ${CIDS_DISTRIBUTION_DIR
     sed -i -- "s/local${CIDS_ACCOUNT_EXTENSION}\/security-jar-template.jar\"/classpath${CIDS_ACCOUNT_EXTENSION}\/${JNLP_BASE}_security.jar\" main=\"true\"/g" $JNLP_FILE
     
     # replace security jar in legacy cids distribution JNLP created by ABF
-    sed -i -- "s/client\/${JNLP_BASE}_security.jar\"/classpath${CIDS_ACCOUNT_EXTENSION}\/${JNLP_BASE}_security.jar\" main=\"true\"/g" $JNLP_FILE
+    sed -i -- "s/client\/${JNLP_BASE}_security.jar\"/lib\/classpath${CIDS_ACCOUNT_EXTENSION}\/${JNLP_BASE}_security.jar\" main=\"true\"/g" $JNLP_FILE
 
     rm -rf JNLP-INF 2>> /dev/null
     rm -f MANIFEST.TXT 2>> /dev/null
