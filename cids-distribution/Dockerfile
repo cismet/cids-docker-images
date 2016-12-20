@@ -50,4 +50,5 @@ RUN chmod -R +x *.sh \
 #EXPOSE 8890
 #EXPOSE 80
 
-ENTRYPOINT ["/bin/bash", "-c", "/container_ctl.sh start"]
+ENTRYPOINT ["/container_ctl.sh"]
+CMD ["start"]
