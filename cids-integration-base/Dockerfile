@@ -3,10 +3,10 @@ FROM ubuntu:trusty
 MAINTAINER Jean-Michel Ruiz "jean.ruiz@cismet.de"
 
 LABEL de.cismet.cids.integration.base.name="cids-integration-base PostgeSQL image" \
-      de.cismet.cids.integration.base.version="postgres-9.6.1-2.0" \
-      de.cismet.cids.integration.base.tag.docker="postgres-9.6.1-2.0" \
-      de.cismet.cids.integration.base.tag.git="postgres-9.6.1-2.0" \
-      de.cismet.cids.integration.base.descripton="PostgeSQL Runtime Image v2" 
+      de.cismet.cids.integration.base.version="postgres-9.0.3-2.0" \
+      de.cismet.cids.integration.base.tag.docker="postgres-9.0.3-2.0" \
+      de.cismet.cids.integration.base.tag.git="postgres-9.0.3-2.0" \
+      de.cismet.cids.integration.base.descripton="PostgeSQL 9.0.3 Runtime Image v2" 
 
 # ENV
 ENV POSTGRES_PASSWORD postgres
@@ -16,13 +16,10 @@ ENV PG_DATA_DIR ${CIDS_INTEGRATION_BASE_DIR}/pg_data
 # if start parameter import is set
 ENV IMPORT_DIR /import/cidsIntegrationBase
 
-ENV PG_VERSION 9.6.1
-ENV GEOS_VERSION 3.6.0
-ENV PROJ4_VERSION 4.9.3
-ENV GDAL_VERSION 1.11.5
-ENV JSONC_VERSION 0.12.1
-ENV LIBXML_VERSION 2.9.4
-ENV POSTGIS_VERSION 2.3.0
+ENV PG_VERSION 9.0.3
+ENV GEOS_VERSION 3.3.5
+ENV PROJ4_VERSION 4.8.0
+ENV POSTGIS_VERSION 1.5.5
 ENV LOCALE de_DE
 ENV ENCODING UTF-8
 ENV PGCLIENTENCODING UTF-8
@@ -67,31 +64,6 @@ RUN cd src/ ; curl -fsSL http://download.osgeo.org/proj/proj-${PROJ4_VERSION}.ta
     && make install \
     && ldconfig \
     && pwd
-
-# build & install JSON-C
-# ADD https://s3.amazonaws.com/json-c_releases/releases/json-c-${JSONC_VERSION}.tar.gz src/
-RUN cd src/ ; curl -fsSL https://s3.amazonaws.com/json-c_releases/releases/json-c-${JSONC_VERSION}.tar.gz | tar -xz \
-    && cd json-c-${JSONC_VERSION} ; ./configure --prefix=/usr/local \
-    && make \
-#   && make check \
-    && make install \
-    && ldconfig 
-
-# build & install LIBXML
-# ADD http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz src/
-RUN cd src/ ; curl -fsSL http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz | tar -xz \
-    && cd libxml2-${LIBXML_VERSION} ; ./configure \
-    && make \
-    && make install \
-    && ldconfig
-
-# build & install GDAL
-# ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz src/
-RUN cd src/ ; curl -fsSL http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz | tar -xz \
-    && cd gdal-${GDAL_VERSION} ; ./configure \
-    && make \
-    && make install \
-    && ldconfig
 
 # build & install postgis
 # ADD http://download.osgeo.org/postgis/source/postgis-${POSTGIS_VERSION}.tar.gz src/
