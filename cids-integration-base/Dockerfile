@@ -19,6 +19,7 @@ ENV IMPORT_DIR /import/cidsIntegrationBase
 ENV PG_VERSION 9.0.3
 ENV GEOS_VERSION 3.3.5
 ENV PROJ4_VERSION 4.8.0
+ENV LIBXML_VERSION 2.9.4
 ENV POSTGIS_VERSION 1.5.5
 ENV LOCALE de_DE
 ENV ENCODING UTF-8
@@ -64,6 +65,14 @@ RUN cd src/ ; curl -fsSL http://download.osgeo.org/proj/proj-${PROJ4_VERSION}.ta
     && make install \
     && ldconfig \
     && pwd
+
+# build & install LIBXML
+# ADD http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz src/
+RUN cd src/ ; curl -fsSL http://xmlsoft.org/sources/libxml2-${LIBXML_VERSION}.tar.gz | tar -xz \
+    && cd libxml2-${LIBXML_VERSION} ; ./configure \
+    && make \
+    && make install \
+    && ldconfig
 
 # build & install postgis
 # ADD http://download.osgeo.org/postgis/source/postgis-${POSTGIS_VERSION}.tar.gz src/
