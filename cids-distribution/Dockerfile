@@ -17,6 +17,10 @@ ENV CIDS_GENERATOR_DIR ${CIDS_DISTRIBUTION_DIR}/gen
 ENV CIDS_SERVER_DIR ${CIDS_DISTRIBUTION_DIR}/server
 ENV CIDS_CLIENT_DIR ${CIDS_DISTRIBUTION_DIR}/client
 
+# container_ctl.sh behaviour
+ENV CIDSCTL_CHECK_DATABASE_CONNECTION true
+ENV CIDSCTL_START_WEBSERVER true
+
 # install nginx
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \

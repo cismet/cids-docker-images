@@ -41,7 +41,7 @@ case "$1" in
             
             if [ -x shutdown_hook.sh ]; then
                 echo -e "\e[32mINFO\e[39m: running \e[1m$SERVICE\e[0m shutdown hook"
-                ./shutdown_hook.sh &
+                ./shutdown_hook.sh
             fi  
 
 	else
@@ -90,7 +90,7 @@ case "$1" in
 
                     if [ -x startup_hook.sh ]; then
                         echo -e "\e[32mINFO\e[39m: running \e[1m$SERVICE\e[0m startup hook"
-                        ./startup_hook.sh &
+                        ./startup_hook.sh
                     fi
                 fi
             fi
