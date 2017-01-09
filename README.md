@@ -1,3 +1,59 @@
-# docker-images
+# cids-docker-images
 
-docker-images + [docker-volumes](https://github.com/cismet/docker-volumes) = dockerized cids systems
+cids-docker-images + [cids-docker-volumes](https://github.com/cismet/cids-docker-volumes) = dockerized cids systems
+
+## cids-integration-base
+
+PostgreSQL + PostGIS RDBMS [docker images](https://hub.docker.com/r/cismet/cids-integration-base/) for cids-integration-base dumps (plain sql + pgdump backups)
+
+#### Tags
+
+- **[postgres-9.6.1-2.0](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.6.1-2.0)**: PostgreSQL 9.6.1 with PostGIS 2.3.0 for cids-distrubution images
+- **[postgres-9.0.3-2.0](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.0.3-2.0)**: PostgreSQL 9.0.3 with PostGIS 1.5.5 for cids-distrubution images
+- **[postgres-9.6.1](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.6.1)**: Legacy PostgreSQL 9.6.1 with PostGIS 2.3.0 (deprecated)
+- **[postgres-9.0.3](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.0.3)**: Legacy PostgreSQL 9.0.3 with PostGIS 1.5.5 (deprecated)
+
+#### Image Configuration
+
+- **/cidsIntegrationBase**:  Control and import scripts for running the RDMBS. The content of this folder (.dockerignore) is part of image. 
+
+#### Volume Configuration
+
+- **/cidsIntegrationBase/pg_data**
+
+  The actual PostgreSQL data directory. (in data volume) This directory is mounted as *named volume* (in docker-compose.yaml or run_container.sh), thus the data is stored on the host directly!
+  
+- **/import/cidsIntegrationBase/**
+
+    This directory contains init-scripts, dumps and role definitions that are imported by [utils/import.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-integration-base/cidsIntegrationBase/utils/import.sh) into the PostgreSQL data base upon container creation (run) when the *import* flag is set. (host-mounted volume) The contents of this directory are overlaid by a host-mounted volume that contains the actual dump files. WARNING: Existing databases in pg_data (data volume) are deleted if *import' flag is set! 
+    
+    - **/import/cidsIntegrationBase/roles/**
+    
+        This directory contains optional global role definitions (roles.sql) that are imported into main postgres database
+        
+    - **/import/cidsIntegrationBase/cids-init/**
+    
+        This directory contains optional init and post-init scripts (cids_init_script.sql and post_init_script.sql) that are applied for each dump in the dumps directory
+    
+    - **/import/cidsIntegrationBase/dumps/**
+
+        This directory contains the actual database dump files (supported formats: .gz, .sql and .backup) that are imported into PostgeSQL database when the 'import' flag  is passed to the [cids_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-integration-base/cidsIntegrationBase/cids_ctl.sh) startup script. For each dump file, a database with the same name is created and optional init and post-init scripts are executed before and after the dump is imported. 
+
+#### Running
+
+See start.sh, run.sh, etc. in **Examples** for running and starting the container. Use [cids_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-integration-base/cidsIntegrationBase/cids_ctl.sh) to control a running container:
+
+``
+docker exec -it cids-integration-base-container-name /cids_ctl.sh start | start import | restart | stop
+``
+
+#### Examples
+
+- **[cids-reference/cids-integration-base](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference/cids-integration-base)**: Loads latest [cids-init-script](https://raw.githubusercontent.com/cismet/cids-init/dev/cids_init_script.sql) from github and import [cids-reference](https://github.com/cismet/cids-docker-volumes/blob/master/cids-reference/cids-integration-base/import/dumps/cids_reference.sql) dump, uses *latest* image
+
+
+-  **[dockerized-wuppertal](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/scripts)**: Uses *postgres-9.0.3-2.0* and *postgres-9.6.1-2.0* images to upgrade local PostgeSQL 9.0.x dumps to 9.6.x. 
+
+-  **[cids-distribution-wunda/cidsIntegrationBase](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-wunda/cidsIntegrationBase)**: Imports local wuppertal dumps and roles (no init script applied), uses *postgres-9.0.3-2.0* image
+
+

@@ -1,0 +1,1 @@
+This directory contains optional global role definitions (roles.sql) that are imported into main postgres database

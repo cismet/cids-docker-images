@@ -1,0 +1,5 @@
+This directory contains the actual database dump files (supported formats: .gz, 
+.sql and .backup) that are imported into PostgeSQL database when the 'import' flag 
+is passed to the container_ctl.sh startup script. For each dump file, a database 
+with the same name is created and optional init and post-init scripts are executed 
+before and after the dump is imported. 

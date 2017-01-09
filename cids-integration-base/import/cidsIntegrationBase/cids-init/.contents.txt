@@ -1,0 +1,1 @@
+This directory contains optional init and post-init scripts (cids_init_script.sql and post_init_script.sql) that are applied for each dump in the dumps directory
