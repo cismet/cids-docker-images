@@ -13,11 +13,11 @@ PostgreSQL + PostGIS RDBMS [docker images](https://hub.docker.com/r/cismet/cids-
 - **[postgres-9.6.1](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.6.1)**: Legacy PostgreSQL 9.6.1 with PostGIS 2.3.0 (deprecated)
 - **[postgres-9.0.3](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.0.3)**: Legacy PostgreSQL 9.0.3 with PostGIS 1.5.5 (deprecated)
 
-#### Image Configuration
+#### Image Contents
 
 - **/cidsIntegrationBase**:  Control and import scripts for running the RDMBS. The content of this folder (.dockerignore) is part of image. 
 
-#### Volume Configuration
+#### Volume Contents
 
 - **/cidsIntegrationBase/pg_data**
 
@@ -47,6 +47,16 @@ See start.sh, run.sh, etc. in **Examples** for running and starting the containe
 docker exec -it cids-integration-base-container-name /cids_ctl.sh start | start import | restart | stop
 ``
 
+##### Environment Variables
+- **POSTGRES_PASSWORD** set var to override the default specified in the [Dockerfile](https://github.com/cismet/cids-docker-images/blob/master/cids-integration-base/Dockerfile)
+
+##### Exposed Ports
+- **5432** Default PostgreSQL Server Port
+
+##### Volumes
+- name-volume:/cidsIntegrationBase/pg_data (optional, recommended to store postgres data on host)
+- ~/host-mounted-volume:/import/cidsIntegrationBase/ (optional, required when importing dumps)
+
 #### Examples
 
 - **[cids-reference/cids-integration-base](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference/cids-integration-base)**: Loads latest [cids-init-script](https://raw.githubusercontent.com/cismet/cids-init/dev/cids_init_script.sql) from github and import [cids-reference](https://github.com/cismet/cids-docker-volumes/blob/master/cids-reference/cids-integration-base/import/dumps/cids_reference.sql) dump, uses *latest* image
@@ -57,3 +67,44 @@ docker exec -it cids-integration-base-container-name /cids_ctl.sh start | start 
 -  **[cids-distribution-wunda/cidsIntegrationBase](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-wunda/cidsIntegrationBase)**: Imports local wuppertal dumps and roles (no init script applied), uses *postgres-9.0.3-2.0* image
 
 
+## cids-java-maven
+
+Java 1.8.x and Maven 3.3.x base [images](https://hub.docker.com/r/cismet/cids-java-maven/) for cids-distribution and cids-server-* images.
+
+#### Tags
+
+- **[jdk-1.8u112-1.1](https://github.com/cismet/cids-docker-images/releases/tag/jdk-1.8u112-1.1)**: JDK 1.8u112 with Maven 3.3.9 for cids-distribution images
+
+
+#### Image Contents
+
+- **/cidsDistribution/**
+
+    Contains a default *policy.file* to grant all permissions to java applications
+
+- **/cidsDistribution/lib/m2**
+
+    This is apache maven's localRepository (MAVEN_BIB_DIR or lib/m2) and is only used in an AUTO-DISTRUBUTION. The image contains some 'problematic' dependencies that cannot be retrieved from public maven repositories. For **AUTO-DISTRUBUTIONs**, this directory can safely declared a DATA VOLUME, since if the container’s base image contains data at the specified mount point, that existing data is copied into the new volume upon volume initialization. (Note that this does not apply when mounting a host directory!). For **LEGCY-DISTRUBUTIONs** this directory must not be declared as volume!
+
+#### Volume Contents
+
+See cids-distribution or cids-server-* images for a description of volume contents.
+
+#### Running
+
+This base image is not run directly.
+
+##### Environment Variables
+- **CIDS_ACCOUNT_EXTENSION** Account extension (e.g. WuNDa, Switchon, CidsReference) for naming local libs, starters, client directories and java processes
+
+- **UPDATE_SNAPSHOTS** Maven update snapshots flag for building AUTO-DISTRIBUTIONs. Default value is `-U`, set to `-nsu -o` for offline builds (Example: [use-local-repository.yml](https://github.com/cismet/cids-docker-volumes/blob/master/cids-reference/use-local-repository.yml) in [cids-docker-volumes/cids-reference/](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference))
+
+##### Exposed Ports
+- none
+
+##### Volumes
+- none
+
+#### Examples
+
+See cids-distribution and cids-server-* images
