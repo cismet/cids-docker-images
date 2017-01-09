@@ -127,7 +127,7 @@ See [cids-distribution](#cids-distribution) and cids-server-* images
 
 ## cids-server
 
-Generic or custom cids-server runtime [image](https://hub.docker.com/r/cismet/cids-server/) for local testing and integration tests. Builds and runs a standalone cids-server instance. No client support, no signing of jar files! The image is based on [cids-java-maven](#cids-java-maven).
+Generic or custom cids-server runtime [image](https://hub.docker.com/r/cismet/cids-server/) for local testing and integration tests. Builds and runs a standalone cids-server instance. No client support, no signing of jar files! The image is based on [cids-java-maven](#cids-java-maven) and must be linked to a  [cids-integration-base](#cids-integration-base) container.
 
 #### Tags
 
@@ -185,4 +185,55 @@ In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
 - **[cids-reference/cids-server](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference/cids-server)**: Builds a standalone cids-server distribution and links to cidsreference_cids-integration-base postgres container.
 
 - **[switchon/cids-server](https://github.com/switchonproject/switchon-docker-volumes/tree/master/switchon/cids-server)**: Builds a standalone custom ([cids-custom-switchon-server](https://github.com/switchonproject/cids-custom-switchon-server)) cids-server distribution and links to switchon_cids-integration-base
+
+## cids-server-rest-legacy
+
+Generic cids-server-rest-legacy runtime [image](https://hub.docker.com/r/cismet/cids-server-rest-legacy/) for local testing and integration tests. Builds and runs a standalone cids-server rest legacy instance. The image is based on [cids-java-maven](#cids-java-maven) and must be linked to a [cids-server](#cids-server) container.
+
+#### Tags
+
+- latest
+
+- [1.1](https://github.com/cismet/cids-docker-images/releases/tag/cidsServerRestLegacy-1.1)
+
+
+#### Image Contents
+
+See [cids-java-maven](#cids-java-maven)
+
+#### Volume Contents
+
+Uses the named /cidsDistribution/ volume from the linked [cids-server](#cids-server) container and thus reuses the settings.xml imported into this volume.
+
+- **/import/cids-server-rest-legacy/**
+
+    The host-mounted volume contains the build (pom.xml) and run (runtime.properties and log4j.properties) configuration. These configuration files are updated by the container startup script [startup.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-server/startup.sh), e.g. to replace template variables by the actual environment variables passed to the docker run command, and the **copied** to the cidsDistribution directory (named volume).
+
+#### Running
+
+See start.sh, run.sh, etc. in **Examples** for running and starting the container.
+The command of the container is the container startup script [startup.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-server-rest-legacy/startup.sh) which checks the connection to a [cids-server](#cids-server) container, builds the standalone cids-server rest legacy distribution and starts the cids-server rest legacy java process.
+
+##### Environment Variables
+
+In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
+
+- **LOG4J_HOST** target host for log4j remote logging. If not provided, the ip of docker host is used. Not relevant, if remote logging is disabled in log4j.properties 
+
+##### Exposed Ports
+- **8890** default cids rest server port
+
+##### Volumes
+- name-volume:/cidsDistribution  (via volumes-from [cids-server](#cids-server) container)
+
+- ~/host-mounted-volume:/import/cids-server-rest-legacy/
+
+##### Links
+- [cids-server](#cids-server) container
+
+#### Examples
+
+- **[cids-reference/cids-server-rest-legacy](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference/cids-server-rest-legacy)**: Builds a standalone cids-server-rest-legacy distribution.
+
+- **[switchon/cids-server-rest-legacy](https://github.com/switchonproject/switchon-docker-volumes/tree/master/switchon/cids-server-rest-legacy)**: Builds a standalone cids-server-rest-legacy distribution and links to switchon_cids-integration-base
 
