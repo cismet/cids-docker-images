@@ -8,9 +8,14 @@ PostgreSQL + PostGIS RDBMS [docker images](https://hub.docker.com/r/cismet/cids-
 
 #### Tags
 
+- latest
+
 - **[postgres-9.6.1-2.0](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.6.1-2.0)**: PostgreSQL 9.6.1 with PostGIS 2.3.0 for cids-distrubution images
+
 - **[postgres-9.0.3-2.0](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.0.3-2.0)**: PostgreSQL 9.0.3 with PostGIS 1.5.5 for cids-distrubution images
+
 - **[postgres-9.6.1](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.6.1)**: Legacy PostgreSQL 9.6.1 with PostGIS 2.3.0 (deprecated)
+
 - **[postgres-9.0.3](https://github.com/cismet/cids-docker-images/releases/tag/postgres-9.0.3)**: Legacy PostgreSQL 9.0.3 with PostGIS 1.5.5 (deprecated)
 
 #### Image Contents
@@ -41,10 +46,11 @@ PostgreSQL + PostGIS RDBMS [docker images](https://hub.docker.com/r/cismet/cids-
 
 #### Running
 
-See start.sh, run.sh, etc. in **Examples** for running and starting the container. Use [cids_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-integration-base/cidsIntegrationBase/cids_ctl.sh) to control a running container:
+See start.sh, run.sh, etc. in **Examples** for running and starting the container. Entrypoint of the container is the container control script [container_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-integration-base/import/container_ctl.sh) which accepts the arguments 'start' (the default), 'start import' (use with care, it overwrites existing databases with dumps from the host-mounted import volume), 'stop' and 'restart'. 
+Use docker exec with [/cidsIntegrationBase/cids_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-integration-base/cidsIntegrationBase/cids_ctl.sh) to control a running container.
 
 ``
-docker exec -it cids-integration-base-container-name /cids_ctl.sh start | start import | restart | stop
+docker exec -it cids-integration-base-container-name /cidsIntegrationBase/cids_ctl.sh start | start import | restart | stop
 ``
 
 ##### Environment Variables
@@ -53,14 +59,19 @@ docker exec -it cids-integration-base-container-name /cids_ctl.sh start | start 
 ##### Exposed Ports
 - **5432** Default PostgreSQL Server Port
 
+##### Links
+- none
+
 ##### Volumes
 - name-volume:/cidsIntegrationBase/pg_data (optional, recommended to store postgres data on host)
+
 - ~/host-mounted-volume:/import/cidsIntegrationBase/ (optional, required when importing dumps)
 
 #### Examples
 
-- **[cids-reference/cids-integration-base](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference/cids-integration-base)**: Loads latest [cids-init-script](https://raw.githubusercontent.com/cismet/cids-init/dev/cids_init_script.sql) from github and import [cids-reference](https://github.com/cismet/cids-docker-volumes/blob/master/cids-reference/cids-integration-base/import/dumps/cids_reference.sql) dump, uses *latest* image
+- **[cids-reference/cids-integration-base](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference/cids-integration-base)**: Loads latest [cids-init-script](https://raw.githubusercontent.com/cismet/cids-init/dev/cids_init_script.sql) from github and imports [cids-reference](https://github.com/cismet/cids-docker-volumes/blob/master/cids-reference/cids-integration-base/import/dumps/cids_reference.sql) dump, uses *latest* image
 
+- **[switchon/cids-integration-base](https://github.com/switchonproject/switchon-docker-volumes/tree/master/switchon/cids-integration-base)**, uses a local dump of the [SWITCH-ON](https://github.com/switchonproject) database.
 
 -  **[dockerized-wuppertal](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/scripts)**: Uses *postgres-9.0.3-2.0* and *postgres-9.6.1-2.0* images to upgrade local PostgeSQL 9.0.x dumps to 9.6.x. 
 
@@ -72,6 +83,8 @@ docker exec -it cids-integration-base-container-name /cids_ctl.sh start | start 
 Java 1.8.x and Maven 3.3.x base [images](https://hub.docker.com/r/cismet/cids-java-maven/) for cids-distribution and cids-server-* images.
 
 #### Tags
+
+- latest
 
 - **[jdk-1.8u112-1.1](https://github.com/cismet/cids-docker-images/releases/tag/jdk-1.8u112-1.1)**: JDK 1.8u112 with Maven 3.3.9 for cids-distribution images
 
@@ -88,7 +101,7 @@ Java 1.8.x and Maven 3.3.x base [images](https://hub.docker.com/r/cismet/cids-ja
 
 #### Volume Contents
 
-See cids-distribution or cids-server-* images for a description of volume contents.
+See [cids-distribution](#cids-distribution) or cids-server-* images for a description of volume contents.
 
 #### Running
 
@@ -105,6 +118,71 @@ This base image is not run directly.
 ##### Volumes
 - none
 
+##### Links
+- none
+
 #### Examples
 
-See cids-distribution and cids-server-* images
+See [cids-distribution](#cids-distribution) and cids-server-* images
+
+## cids-server
+
+Generic or custom cids-server runtime [image](https://hub.docker.com/r/cismet/cids-server/) for local testing and integration tests. Builds and runs a standalone cids-server instance. No client support, no signing of jar files! The image is based on [cids-java-maven](#cids-java-maven).
+
+#### Tags
+
+- latest
+
+- [1.1](https://github.com/cismet/cids-docker-images/releases/tag/cidsServer-1.1)
+
+
+#### Image Contents
+
+In addition to image contents from  [cids-java-maven](#cids-java-maven):
+
+- **/cidsDistribution/cids-server/icons**
+
+    Contains some default icons
+
+#### Volume Contents
+
+- **/cidsDistribution/**
+    
+    The complete cids-distribution directory is mounted as reusable named volume. Thus, builds can use the existing maven repository in lib/m2
+
+- **import/cids-server/**
+
+    The host-mounted volume contains the build (settings.xml and pom.xml) and run (runtime.properties and log4j.properties) configuration. These configuration files are updated by the container startup script [startup.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-server/startup.sh), e.g. to replace template variables by the actual environment variables passed to the docker run command, and the **copied** to the cidsDistribution directory (named volume).
+
+#### Running
+
+See start.sh, run.sh, etc. in **Examples** for running and starting the container.
+The command of the container is the container startup script [startup.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-server/startup.sh) which checks the connection to a [cids-integration-base](#cids-integration-base) container, builds the standalone cids-server distribution and starts the cids-server java process.
+
+##### Environment Variables
+
+In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
+
+- **LOG4J_HOST** target host for log4j remote logging. If not provided, the ip of docker host is used. Not relevant, if remote logging is disabled in log4j.properties 
+
+- **CIDS_SERVER_STARTER:** name of the cids server starter JAR file (default: cids-server-2.0-SNAPSHOT-starter.jar), only relevant for custom distributions. 
+
+- **CIDS_SERVER_START_OPTIONS** optional arguments that are passed to CIDS_SERVER_STARTER
+
+##### Exposed Ports
+- **9986** default cids broker port
+
+##### Volumes
+- name-volume:/cidsDistribution 
+
+- ~/host-mounted-volume:/import/cids-server/
+
+##### Links
+- [cids-integration-base](#cids-integration-base) container
+
+#### Examples
+
+- **[cids-reference/cids-server](https://github.com/cismet/cids-docker-volumes/tree/master/cids-reference/cids-server)**: Builds a standalone cids-server distribution and links to cidsreference_cids-integration-base postgres container.
+
+- **[switchon/cids-server](https://github.com/switchonproject/switchon-docker-volumes/tree/master/switchon/cids-server)**: Builds a standalone custom ([cids-custom-switchon-server](https://github.com/switchonproject/cids-custom-switchon-server)) cids-server distribution and links to switchon_cids-integration-base
+

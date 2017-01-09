@@ -51,7 +51,7 @@ RUN chmod -R +x *.sh \
 # add /tmp as volume since it may contain data that changes often -> in custom images!
 # VOLUME /tmp
 
-# expose service ports in chuild images!
+# expose service ports in child images!
 #EXPOSE 9986
 #EXPOSE 8890
 #EXPOSE 80
