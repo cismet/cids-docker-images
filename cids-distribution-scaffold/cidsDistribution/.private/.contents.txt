@@ -1,7 +1,2 @@
-This is the client configuration directory (host mounted volume). 
-All contents in the image (including this file) will be overlaid by a HOST-MOUNTED DOCKER VOLUME!
-
-
-keystore
-keystore.pwd
-server.pwd
+This is the private configuration directory that is need during image build for the AUTO DISTRIBUTION and for signing JAR files.
+WARNING: private data is still present in intermediate image layers! Don't push the image to public registries! See https://github.com/docker/docker/issues/13490

@@ -2,7 +2,7 @@
 
 [cids-docker-images](https://hub.docker.com/u/cismet/) + [cids-docker-volumes](https://github.com/cismet/cids-docker-volumes) = dockerized cids systems
 
-## cids-integration-base
+## [cids-integration-base](https://github.com/cismet/cids-docker-images/tree/master/cids-integration-base)
 
 PostgreSQL + PostGIS RDBMS [docker images](https://hub.docker.com/r/cismet/cids-integration-base/) for cids-integration-base dumps (plain sql + pgdump backups)
 
@@ -78,7 +78,7 @@ docker exec -it cids-integration-base-container-name /cidsIntegrationBase/cids_c
 -  **[cids-distribution-wunda/cidsIntegrationBase](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-wunda/cidsIntegrationBase)**: Imports local wuppertal dumps and roles (no init script applied), uses *postgres-9.0.3-2.0* image
 
 
-## cids-java-maven
+## [cids-java-maven](https://github.com/cismet/cids-docker-images/tree/master/cids-java-maven)
 
 Oracle JDK 1.8.x and Maven 3.3.x base [image](https://hub.docker.com/r/cismet/cids-java-maven/) for cids-distribution and cids-server-* images. Adds also [letsencrypt](https://letsencrypt.org/) certificates to the JRE's cacerts file! container 
 
@@ -125,7 +125,7 @@ This base image is not run directly.
 
 See [cids-distribution](#cids-distribution) and cids-server-* images
 
-## cids-server
+## [cids-server](https://github.com/cismet/cids-docker-images/tree/master/cids-server)
 
 Generic or custom cids-server runtime [image](https://hub.docker.com/r/cismet/cids-server/) for local testing and integration tests. Builds and runs a standalone cids-server instance. No client support, no signing of jar files! The image is based on [cids-java-maven](#cids-java-maven) and must be linked to a  [cids-integration-base](#cids-integration-base) container.
 
@@ -186,7 +186,7 @@ In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
 
 - **[switchon/cids-server](https://github.com/switchonproject/switchon-docker-volumes/tree/master/switchon/cids-server)**: Builds a standalone custom ([cids-custom-switchon-server](https://github.com/switchonproject/cids-custom-switchon-server)) cids-server distribution and links to switchon_cids-integration-base
 
-## cids-server-rest-legacy
+## [cids-server-rest-legacy](https://github.com/cismet/cids-docker-images/tree/master/cids-server-rest-legacy)
 
 Generic cids-server-rest-legacy runtime [image](https://hub.docker.com/r/cismet/cids-server-rest-legacy/) for local testing and integration tests. Builds and runs a standalone cids-server rest legacy instance. The image is based on [cids-java-maven](#cids-java-maven) and must be linked to a [cids-server](#cids-server) container.
 
@@ -237,7 +237,7 @@ In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
 
 - **[switchon/cids-server-rest-legacy](https://github.com/switchonproject/switchon-docker-volumes/tree/master/switchon/cids-server-rest-legacy)**: Builds a standalone cids-server-rest-legacy distribution and links to switchon_cids-integration-base
 
-## cids-distribution
+## [cids-distribution](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution)
 
 General abstract cids distribution runtime base [image](https://hub.docker.com/r/cismet/cids-distribution/) for complete dockerized cids systems. Supports LEGACY and AUTO DISTRIBUTIONS. The image is based on [cids-java-maven](#cids-java-maven) and may be linked to a [cids-integration-base](#cids-integration-base) container. The image is just a template with some build and control scripts. The main difference between cids-server-* and cids-distribution images is, that the cids-distribution **image** contains the actual distribution libraries (internal and external dependencies) while in case of the cids-server-* container, the libraries are put into a volume. Thus, a cids-distribution image represents an immutable snapshot (updating the distribution requires to build a new image), while a cids-server-* distribution *can* be updated (see UPDATE_SNAPSHOTS environment variable) on each container start. The main differences between a LEGACY and AUTO DISTRIBUTIONS cids-distrivution image is that in case of the LEGACY the libraries are copied (COPY instruction in Dockerfile) into the image when the image is built while in case of the AUTO DISTRIBUTION a maven build is performed when the image is built. In both cases, runtime information (runtime.properties, res.jar, server_resources, etc.) is not contained within the image but is stored on host-mounted volumes.
 
@@ -249,6 +249,8 @@ General abstract cids distribution runtime base [image](https://hub.docker.com/r
 
 
 #### Image Contents
+
+The general structure of the /cidsDistribution/ directory is explained in [cids-distribution-scaffold](#cids-distribution-scaffold).
 
 In addition to [cids-java-maven](#cids-java-maven):
 
@@ -354,7 +356,7 @@ Depends on child image. Usually to cids-integration-base container.
 
 #### Examples
 
-- **[cids-distribution-scaffold](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-scaffold)**: Simple Scaffold project that  used as template for new cids-distribution images (both AUTO- and LEGACY DISTRIBUTIONS).
+- **[cids-distribution-scaffold](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-scaffold)**: Simple Scaffold project that can be used as template for new cids-distribution images (both AUTO- and LEGACY DISTRIBUTIONS).
 
 - **[cids-distribution-switchon](https://github.com/switchonproject/switchon-docker-images/tree/master/cids-distribution-switchon)**: Example AUTO DISTRIBUTION image and [volume](https://github.com/switchonproject/switchon-docker-volumes/tree/master/cids-distribution-switchon) for custom [SWITCH-ON](http://switchonproject.github.io/) distributions.
 
@@ -362,9 +364,9 @@ Depends on child image. Usually to cids-integration-base container.
 
 - **[cids-distribution-belis-rest](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-images/cids-distribution-belis-rest)** Example AUTO DISTRIBUTION and [volumes](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-belis-rest/) for custom BELIS distributions. Legacy rest server (without client and nginx), requires link to cids-distribution-wunda container.
 
-## cids-distribution-cache
+## [cids-distribution-cache](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-cache)
 
-Optional cache [image](https://hub.docker.com/r/cismet/cids-distribution-cache/) that contains a pre-filled lib/m2 repository for faster image build. The repository can be updated with the contents of a running cids-distribution-xxx AUTO-DISTRIBUTION container, e.g. [cids-distribution-switchon](https://github.com/switchonproject/switchon-docker-images/tree/master/cids-distribution-switchon), with the command
+Optional abstract cache [image](https://hub.docker.com/r/cismet/cids-distribution-cache/) that contains a pre-filled lib/m2 repository for faster image build. The repository can be updated with the contents of a running cids-distribution-xxx AUTO-DISTRIBUTION container, e.g. [cids-distribution-switchon](https://github.com/switchonproject/switchon-docker-images/tree/master/cids-distribution-switchon), with the command
 
 ``
 docker cp cidsdistributionswitchon_cids-distribution-switchon:/cidsDistribution/lib/m2 ~/git_work/cids-docker-images/cids-distribution-cache/cidsDistribution/lib/
@@ -372,10 +374,99 @@ docker cp cidsdistributionswitchon_cids-distribution-switchon:/cidsDistribution/
 
 The cids-distribution-cache image is not automatically build on [dockerhub](https://hub.docker.com/u/cismet) but has to be pushed manually with help of [push.sh](https:/github.com/cismet/cids-docker-images/blob/master/cids-distribution-cache/push.sh).
 
+#### Tags
+
+- latest
+
+- [1.0](https://hub.docker.com/r/cismet/cids-distribution-cache/tags/)
+
+#### Image Contents
+
+Contains in addition to [cids-distribution](#cids-distribution) and [cids-java-maven](#cids-java-maven) a pre-filled lib/m2 repository in cidsDistribution/lib/m2
+
+#### Volume Contents
+
+See [cids-distribution](#cids-distribution).
+
+#### Running
+
+See [cids-distribution](#cids-distribution).
+
 #### Examples
 
 - **[cids-distribution-switchon](https://github.com/switchonproject/switchon-docker-images/tree/master/cids-distribution-switchon)**
 
 - **[cids-distribution-belis-rest](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-images/cids-distribution-belis-rest)**
 
-## cids-distribution-scaffold
+## [cids-distribution-scaffold](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-scaffold)
+
+Scaffold cids distribution Runtime [image](https://hub.docker.com/r/cismet/cids-distribution-scaffold/). Simple Scaffold project that can be used as template for new cids-distribution images (both AUTO- and LEGACY DISTRIBUTIONS).
+
+#### Tags
+
+- latest
+
+- [1.0](https://github.com/cismet/cids-docker-images/releases/tag/cidsDistributionScaffold-1.0)
+
+#### Image Contents
+
+The image contains the following scaffold structure that is both applicable to LEGACY and AUTO-DISTRIBUTIONS:
+
+- **/cidsDistribution/.private/**   
+    
+    This is the private configuration directory that is need during image build for the AUTO DISTRIBUTION and for signing JAR files. Although the directory is removed during the docker image build process, private data is still present in intermediate image layers! Therfore the image must not be pushed to public registries (hub.docker.com) The possibility to 'flatten' docker images (--squash) will be added in the next docker release. See https://github.com/docker/docker/issues/13490 and https://github.com/docker/docker/pull/22641#issuecomment-266156133
+
+- **/cidsDistribution/client/**   
+
+    This is the client configuration directory (host mounted volume). Empty in docker image! **All contents in the image will be overlaid by a HOST-MOUNTED DOCKER VOLUME!**
+
+- **/cidsDistribution/server/**   
+
+    This is the server configuration directory (host mounted volume). All contents in the image will be overlaid by a HOST-MOUNTED DOCKER VOLUME! Each subdirectory (###-service-name) represents a java service that is controlled by [cids_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/cids_ctl.sh). Each service directory has to contain at least the the service control script [cs_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/cs_ctl.template.sh), optional startup- and shutdown-hook scripts (shutdown_hook.sh and startup_hook.sh) and any configuration files required by the service (e.g. runtime.properties, log4j.properties, ...)
+
+- **/cidsDistribution/lib/cidsLibBase/**
+
+    cids ABF Library Management Configuration Files (local on docker host). The content of this folder is neither part of the custom cids-distribution IMAGE nor
+mounted as VOLUME, thus it is not present in the running custom cids-distribution CONTAINER! It is required when manually updating (with cidsABF) the custom cids-distribution IMAGE (e.g. add new dependency) or when modifying the RUNTIME configuration (e.g. rebuild res.jar) of a custom cids-distribution CONTAINER.
+
+- **/cidsDistribution/lib/classpath/**
+
+    Generated classpath JARS for AUTO DISTRIBUTIONS (in docker image) The content of this folder is part of the custom cids-distribution IMAGE!
+Not used for MANUAL DISTRIBUTIONs (classpath dependencies go directly into starters instead!)
+custom cids-distributions may use their own classpath directories e.g. classpathSwitchon
+
+- **cidsDistribution/lib/local/**
+
+    Local runtime dependent configuration template JARs (empty JARs) for custom cids-distributions containers (local on docker host **and** host-mounted volume). Empty in docker image but not empty on docker host during image build of AUTO-DISTRIBUTIONS! Local runtime dependent configurations are not part of the image but need to be present 
+during automated builds of AUTO DISTRIBUTIONS since they are put into the lib/classpath JARs! When building an AUTO DISTRIBUTION, the JARs in this directory are copied into the image to lib/local. The cids maven plugin adds those local dependencies to lib/classpath JARs and the client JNLPs. When the
+container is started, the empty JAR in container:lib/local are overlaid with the actual JAR from the host-mounted volume! Custom cids-distributions may use their own local.scaffold directories e.g. localSwitchon
+
+- **/cidsDistribution/lib/ext/**
+
+    EXTERNAL dependencies for LEGACY DISTRIBUTIONS maintained with cidsABF (in docker image). The content of this folder is part of the custom cids-distribution IMAGE! Not used for AUTO DISTRIBUTIONs (dependencies go into /cidsDistribution/lib/m2 instead)
+
+
+- **/cidsDistribution/lib/int/**
+    
+    INTERNAL cids dependencies for LEGACY DISTRIBUTIONS maintained with cidsABF (in docker image) The content of this folder is part of the custom cids-distribution IMAGE! Not used for AUTO DISTRIBUTIONs (dependencies go into /cidsDistribution/lib/m2 instead)
+
+- **/cidsDistribution/lib/m2/**
+
+    This is apache maven's localRepository (MAVEN_BIB_DIR or lib/m2) and is only used
+in an AUTO-DISTRUBUTION! The base image [cids-java-maven](#cids-java-mave) adds some 'problematic' dependencies that cannot retrieved from public maven repositories, [cids-distribution-cache](#cids-distribution-cache) (if used as base image) adds common dependencies required by cids distributions
+
+- **/cidsDistribution/lib/starter/**
+    
+    Starters for AUTO- and LEGACY DISTRIBUTIONS maintained with cidsABF (in docker image). The content of this folder is part of the custom cids-distribution IMAGE! Custom cids-distributions shall use their own starter directories e.g. starterWunda
+
+#### Volume Contents
+
+See [cids-distribution](#cids-distribution) volume content. In general the image directories /cidsDistribution/client/, /cidsDistribution/server/ and /cidsDistribution/localXXX/ are overlaid by host-mounted volumes.
+
+#### Running
+
+See shellscripts in [cids-distribution-scaffold](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-scaffold)
+
+#### Examples
+
+See [cids-distribution-scaffold/cidsDistribution/server](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-scaffold/cidsDistribution/server).

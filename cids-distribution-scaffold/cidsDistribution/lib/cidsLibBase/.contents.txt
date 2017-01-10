@@ -1,7 +1,7 @@
 cids ABF Library Management Configuration Files (local on docker host)
 
 The content of this folder is neither part of the custom cids-distribution IMAGE nor
-mounted as VOLUME, thus it is not prenstent in the running custom cids-distribution CONTAINER.! 
+mounted as VOLUME, thus it is not present in the running custom cids-distribution CONTAINER.! 
 
 It is required when manually updating (with cidsABF) the custom cids-distribution IMAGE (e.g. add new dependency) 
-or when modifying the RUNTIME configuration (e.g. requild res.jar) of a custom cids-distribution CONTAINER.
+or when modifying the RUNTIME configuration (e.g. rebuild res.jar) of a custom cids-distribution CONTAINER.
