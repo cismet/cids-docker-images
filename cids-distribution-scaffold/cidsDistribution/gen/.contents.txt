@@ -1,0 +1,4 @@
+This is maven generator directory and is only used in an AUTO-DISTRUBUTION during image build! (in docker image)
+
+It has to contain the maven settings.xml file and one or more subdirectories containing  a single pom.xml file.
+Environment variables can directly be substituted in pom.xml and settings.xml, e.g. <m2codebase>${env.MAVEN_LIB_DIR}</m2codebase>.
