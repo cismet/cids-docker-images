@@ -1,6 +1,6 @@
 # cids-docker-images
 
-cids-docker-images + [cids-docker-volumes](https://github.com/cismet/cids-docker-volumes) = dockerized cids systems
+[cids-docker-images](https://hub.docker.com/u/cismet/) + [cids-docker-volumes](https://github.com/cismet/cids-docker-volumes) = dockerized cids systems
 
 ## cids-integration-base
 
@@ -80,7 +80,7 @@ docker exec -it cids-integration-base-container-name /cidsIntegrationBase/cids_c
 
 ## cids-java-maven
 
-Java 1.8.x and Maven 3.3.x base [images](https://hub.docker.com/r/cismet/cids-java-maven/) for cids-distribution and cids-server-* images.
+Oracle JDK 1.8.x and Maven 3.3.x base [image](https://hub.docker.com/r/cismet/cids-java-maven/) for cids-distribution and cids-server-* images. Adds also [letsencrypt](https://letsencrypt.org/) certificates to the JRE's cacerts file! container 
 
 #### Tags
 
@@ -218,7 +218,7 @@ The command of the container is the container startup script [startup.sh](https:
 
 In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
 
-- **LOG4J_HOST** target host for log4j remote logging. If not provided, the ip of docker host is used. Not relevant, if remote logging is disabled in log4j.properties 
+- **LOG4J_HOST** target host for log4j remote logging. If not provided, the IP address of docker host is used. Not relevant, if remote logging is disabled in log4j.properties 
 
 ##### Exposed Ports
 - **8890** default cids rest server port
@@ -237,3 +237,117 @@ In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
 
 - **[switchon/cids-server-rest-legacy](https://github.com/switchonproject/switchon-docker-volumes/tree/master/switchon/cids-server-rest-legacy)**: Builds a standalone cids-server-rest-legacy distribution and links to switchon_cids-integration-base
 
+## cids-distribution
+
+General abstract cids distribution runtime base [image](https://hub.docker.com/r/cismet/cids-distribution/) for complete dockerized cids systems. Supports LEGACY and AUTO DISTRIBUTIONS. The image is based on [cids-java-maven](#cids-java-maven) and may be linked to a [cids-integration-base](#cids-integration-base) container. The image is just a template with some build and control scripts. The main difference between cids-server-* and cids-distribution images is, that the cids-distribution **image** contains the actual distribution libraries (internal and external dependencies) while in case of the cids-server-* container, the libraries are put into a volume. Thus, a cids-distribution image represents an immutable snapshot (updating the distribution requires to build a new image), while a cids-server-* distribution *can* be updated (see UPDATE_SNAPSHOTS environment variable) on each container start. The main differences between a LEGACY and AUTO DISTRIBUTIONS cids-distrivution image is that in case of the LEGACY the libraries are copied (COPY instruction in Dockerfile) into the image when the image is built while in case of the AUTO DISTRIBUTION a maven build is performed when the image is built. In both cases, runtime information (runtime.properties, res.jar, server_resources, etc.) is not contained within the image but is stored on host-mounted volumes.
+
+#### Tags
+
+- latest
+
+- [1.0](https://github.com/cismet/cids-docker-images/releases/tag/cidsDistribution-1.0)
+
+
+#### Image Contents
+
+In addition to [cids-java-maven](#cids-java-maven):
+
+- **[/cidsDistribution/](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution/cidsDistribution/)**
+
+Contains the [cids_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/cids_ctl.sh) services control script for starting, stopping and restarting either all or one specific service. The scripts checks also for available .PID files and tries to gracefully stop services before killing the process.
+
+- **[/cidsDistribution/utils/](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution/cidsDistribution/utils)**
+
+    Utilities for running and building the custom distribution (in docker image)
+The content of this folder is part of the custom cids-distribution IMAGE!
+
+    - [_build_autodistribution.master.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/_build_autodistribution.master.sh)
+        
+        Master script for bulding AUTO-DISTRIBUTIONS. Requires cidsDistribution/.private/server.pwd, keystore and keystore.pwd to be present during maven build (files deleted after maven build). Processes all pom.xml files in subdirectories of the generator directory cidsDistribution/gen and builds the respective maven projects. Supports MAVEN_BUID_COMMAND and UPDATE_SNAPSHOTS environment variables
+
+    - [build_autodistribution.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/build_autodistribution.sh)
+
+        Uses _build_autodistribution.master.sh with MAVEN_BUID_COMMAND `clean package` to build the respective maven project
+
+    - [prepare_autodistribution.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/prepare_autodistribution.sh)
+    
+        Uses _build_autodistribution.master.sh with MAVEN_BUID_COMMAND `dependency:go-offline --fail-never` to download all dependencies of the respective maven project
+
+    - [_cids_service_ctl.master.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/_cids_service_ctl.master.sh)
+        
+        Master script for starting, stopping and restarting cids-servers instances. This master script is used by the individual *[cs_ctl.sh](https://github.com/switchonproject/switchon-docker-volumes/blob/master/cids-distribution-switchon/cidsDistribution/server/030_switchon/cs_ctl.sh)* scripts (from host-mounted volume) that are located in the /cidsDistribution/server/###-server-name directories. It created .PID and .OUT files in the respective [server directories](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-scaffold/cidsDistribution/server/000-DemoService.1). If present, it invokes startup_hook.sh and shutdown_hook.sh found in these directories after service start and stop (Refer to [cids-distribution-scaffold](#cids-distribution-scaffold) for example).
+
+    - [cs_ctl.template.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/cs_ctl.template.sh)
+
+        Template file for individual cs_ctl.sh server control scripts that have to be placed in the respective server/###-server-name directories.  
+
+    - [create_impostor.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/create_impostor.sh)
+
+        Creates an "IMPOSTOR.JAR" (needed to naming java processes) for a specific server starter. Requires the variables STARTER_JAR and SERVICE (name of the service and thus name of the IMPOSTOR.JAR) to be set in the respective *cs_ctl.sh* script.
+
+    - [create_security_jar](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/create_security_jar.sh)
+
+        Creates the "SECUTIRY.JAR" that contains signed JNLP files of Java Webstart client applications. Requires cidsDsitribution/.private/keystore and cidsDsitribution/.private/keystore.pwd files to be present. Replace either the *security-jar-template.jar* classpath entry in JNLP files generated by AUTO-DISTRIBUTIONS or replaces ${JNLP_BASE}_security.jar in LEGACY DISTRIBUTIONS JNLP created by cids ABF].
+
+    - [sign.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/sign.sh)
+
+        Signs a JAR file with cismet certificate. Checks if the JAR file is already signed with the cismet certificate, removes existing certificates if present and updates JAR Manifests with proper Permissions and Codebase instructions.
+
+    - [sign_all.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/sign_all.sh)
+
+        Uses sign.sh to sign all JAR files in the provided lib dir (e.g. /cidsDistribution/lib/m2/). Signs only JAR files that have been modified since the last run sign_all.sh to speed up the signing process when building an image based on [cids-distribution-cache](#cids-distribution-cache)).
+
+    - [update_configuration.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/update_configuration.sh)
+
+        Checks runtime.properties and log4j.properties in the host-mounted volume directories and replaces template variables __DB_HOST__, __DOCKER_HOST__, __LOG4J_HOST__, etc. with actual values from environment variables
+    
+- **/import/**
+
+    The import directory contains the container [container_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/import/container_ctl.sh) container control, script and the [default nginx webserver configuration](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/import/nginx/default) (the files are copied to the respective image directories, see [Dockerfile](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/Dockerfile)).
+
+
+Additional image contents depend on LEGACY and AUTO-DISTRIBUTION. See [cids-distribution-wunda](#cids-distribution-wunda) and [cids-distribution-switchon](#cids-distribution-switchon) for more details.
+
+#### Volume Contents
+
+- **/cidsDistribution/client/**
+- **/cidsDistribution/server/**
+- **/cidsDistribution/lib/localXXX**
+
+    The host-mounted volumes contain server and client runtime configurations and (runtime.properties, log4j.properties, navigator.cfg, server_resources, etc.). Configuration files can updated by [update_configuration.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/cidsDistribution/utils/update_configuration.sh), e.g. to replace template variables by the actual environment variables passed to the docker run command. The lib/localXXX directory contains local libraries /e.g. res.jar) that are not part of the image. When mounting those volumes from the host, it is important to note that any content available at the respective path in the image and container, respectively, will be overlaid by the content of the volume!
+
+#### Running
+
+See start.sh, run.sh, etc. in **Examples** for running and starting the container.
+The entrypoint of the container is the container control script[container_ctl.sh](https://github.com/cismet/cids-docker-images/blob/master/cids-distribution/import/container_ctl.sh) which conditionally checks the connection to a [cids-integration-base](#cids-integration-base), starts all configured cids-server java processes and conditionally starts the nginx webserver process (required for serving Java Webstart client content).
+
+##### Environment Variables
+
+In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
+
+- **LOG4J_HOST** target host for log4j remote logging. If not provided, the IP address of docker host is used. Not relevant, if __LOG4J_HOST__ template variable is not set or remote logging is disabled in log4j.properties.  
+
+- **CIDS_CODEBASE** Codebase required for JNLP files, default is http://localhost
+
+- **CIDSCTL_CHECK_DATABASE_CONNECTION** Check connection to [cids-integration-base](#cids-integration-base) on container start (default: true)
+
+- **CIDSCTL_START_WEBSERVER** Start nginx webserver on container start (default: true)
+
+##### Exposed Ports
+- **none** Service ports (9986, 8890 and 80) are exposed in child images!
+
+##### Volumes
+Depends on child image
+
+##### Links
+Depends on child image
+
+#### Examples
+
+- **[cids-distribution-scaffold](https://github.com/cismet/cids-docker-images/tree/master/cids-distribution-scaffold)**: Simple Scaffold project that  used as template for new cids-distribution images (both AUTO- and LEGACY DISTRIBUTIONS).
+
+- **[cids-distribution-switchon](https://github.com/switchonproject/switchon-docker-images/tree/master/cids-distribution-switchon)**: Example AUTO DISTRIBUTION image and [volume](https://github.com/switchonproject/switchon-docker-volumes/tree/master/cids-distribution-switchon) for custom [SWITCH-ON](http://switchonproject.github.io/) distributions.
+
+- **[cids-distribution-wunda](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-images/cids-distribution-wunda)** Example LEGACY DISTRIBUTION and [volumes](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-wunda) for custom WuNDa distributions.
+
+- **[cids-distribution-belis-rest](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-images/cids-distribution-belis-rest)** Example AUTO DISTRIBUTION and [volumes](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-belis-rest/) for custom BELIS distributions. Legacy rest server (without client and nginx), requires link to cids-distribution-wunda container.
