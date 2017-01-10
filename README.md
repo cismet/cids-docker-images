@@ -334,13 +334,23 @@ In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
 - **CIDSCTL_START_WEBSERVER** Start nginx webserver on container start (default: true)
 
 ##### Exposed Ports
-- **none** Service ports (9986, 8890 and 80) are exposed in child images!
+
+Depends on child image. Usually
+
+- **9986** cids broker
+- **8890** cids REST service
+- **80** nginx webserver
 
 ##### Volumes
-Depends on child image
+
+Depends on child image. Usually
+
+- ~/host-mounted-volume:/cidsDistribution/client
+- ~/host-mounted-volume:/cidsDistribution/server´
+- ~/host-mounted-volume:/cidsDistribution/lib/localXXX
 
 ##### Links
-Depends on child image
+Depends on child image. Usually to cids-integration-base container.
 
 #### Examples
 
@@ -351,3 +361,21 @@ Depends on child image
 - **[cids-distribution-wunda](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-images/cids-distribution-wunda)** Example LEGACY DISTRIBUTION and [volumes](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-wunda) for custom WuNDa distributions.
 
 - **[cids-distribution-belis-rest](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-images/cids-distribution-belis-rest)** Example AUTO DISTRIBUTION and [volumes](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-volumes/cids-distribution-belis-rest/) for custom BELIS distributions. Legacy rest server (without client and nginx), requires link to cids-distribution-wunda container.
+
+## cids-distribution-cache
+
+Optional cache [image](https://hub.docker.com/r/cismet/cids-distribution-cache/) that contains a pre-filled lib/m2 repository for faster image build. The repository can be updated with the contents of a running cids-distribution-xxx AUTO-DISTRIBUTION container, e.g. [cids-distribution-switchon](https://github.com/switchonproject/switchon-docker-images/tree/master/cids-distribution-switchon), with the command
+
+``
+docker cp cidsdistributionswitchon_cids-distribution-switchon:/cidsDistribution/lib/m2 ~/git_work/cids-docker-images/cids-distribution-cache/cidsDistribution/lib/
+``
+
+The cids-distribution-cache image is not automatically build on [dockerhub](https://hub.docker.com/u/cismet) but has to be pushed manually with help of [push.sh](https:/github.com/cismet/cids-docker-images/blob/master/cids-distribution-cache/push.sh).
+
+#### Examples
+
+- **[cids-distribution-switchon](https://github.com/switchonproject/switchon-docker-images/tree/master/cids-distribution-switchon)**
+
+- **[cids-distribution-belis-rest](https://github.com/cismet/developer-space/tree/dockerized-wuppertal/wunda-docker-images/cids-distribution-belis-rest)**
+
+## cids-distribution-scaffold
