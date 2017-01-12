@@ -10,6 +10,12 @@ for SERVICE_DIR in *; do
             sed -i -- "s/__DOCKER_HOST__/${DOCKER_HOST_IP}/g" ${SERVICE_DIR}/runtime.properties 2>> /dev/null
         fi
 
+        if grep -q __DOCKER_HOST__ "${SERVICE_DIR}/log4j.properties" || grep -q __DOCKER_HOST__ "${SERVICE_DIR}/log4j.properties" ; then
+            echo -e "\e[32mINFO\e[39m: Updating ${CIDS_SERVER_DIR}/log4j.properties remote LOG4J host with ${DOCKER_HOST_IP}:${LOG4J_PORT:-4445}"
+            sed -i -- "s/__DOCKER_HOST__/${DOCKER_HOST_IP}/g" ${SERVICE_DIR}/log4j.properties 2>> /dev/null
+            sed -i -- "s/__DOCKER_HOST__/${LOG4J_PORT:-4445}/g" ${SERVICE_DIR}/log4j.properties 2>> /dev/null
+        fi
+
         if grep -q __DB_HOST__ "${SERVICE_DIR}/runtime.properties" || grep -q __DB_PORT__ "${SERVICE_DIR}/runtime.properties" ; then
             echo -e "\e[32mINFO\e[39m: Updating ${SERVICE_DIR}/runtime.properties JDBC Connection with ${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-$DOCKER_HOST_IP}:${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT:-5432}"
             sed -i -- "s/__DB_HOST__/${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR:-$DOCKER_HOST_IP}/g" ${SERVICE_DIR}/runtime.properties 2>> /dev/null
