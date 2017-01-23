@@ -1,11 +1,11 @@
-FROM cismet/cids-java-maven:latest
+FROM cismet/cids-java-maven:jdk-1.8u112-1.1
 
 MAINTAINER Pascal Dihé <pascal.dihe@cismet.de>
 
 LABEL de.cismet.cids.distribution.name="cids-distribution image" \
-      de.cismet.cids.distribution.version="1.1" \
-      de.cismet.cids.distribution.tag.docker="1.1" \
-      de.cismet.cids.distribution.tag.git="cidsDistribution-1.1" \
+      de.cismet.cids.distribution.version="4.0" \
+      de.cismet.cids.distribution.tag.docker="4.0" \
+      de.cismet.cids.distribution.tag.git="cidsDistribution-4.0" \
       de.cismet.cids.distribution.descripton="General abstract cids distribution Runtime Image" 
 
 # override account extension and codebase in child autodistribution images!

@@ -1,3 +1,7 @@
 #!/bin/bash
 
-docker build -t cismet/cids-distribution-scaffold:latest -t cismet/cids-distribution-scaffold:1.1 .
+# RELEASE BUILD ----------------------------------------------------------------
+docker build -t cismet/cids-distribution-scaffold:latest -t cismet/cids-distribution-scaffold:4.0 .
+
+# SNAPSHOT BUILD ---------------------------------------------------------------
+# docker build -t cismet/cids-distribution-scaffold:latest -t cismet/cids-distribution-scaffold:4.1-SNAPSHOT .
