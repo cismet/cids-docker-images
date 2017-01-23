@@ -3,9 +3,9 @@ FROM cismet/cids-distribution:latest
 MAINTAINER Pascal Dihé <pascal.dihe@cismet.de>
 
 LABEL de.cismet.cids.distribution.scaffold.name="cids-distribution-scaffold image" \
-      de.cismet.cids.distribution.scaffold.version="1.0" \
-      de.cismet.cids.distribution.scaffold.tag.docker="1.0" \
-      de.cismet.cids.distribution.scaffold.tag.git="cidsDistributionScaffold-1.0" \
+      de.cismet.cids.distribution.scaffold.version="1.1" \
+      de.cismet.cids.distribution.scaffold.tag.docker="1.1" \
+      de.cismet.cids.distribution.scaffold.tag.git="cidsDistributionScaffold-1.1" \
       de.cismet.cids.distribution.scaffold.descripton="Scaffold cids distribution Runtime Image" 
 
 # use empty account extension -> lib/local and lib/starter

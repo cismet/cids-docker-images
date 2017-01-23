@@ -8,4 +8,4 @@
 
 docker login
 docker push cismet/cids-distribution-cache:latest
-docker push cismet/cids-distribution-cache:1.0
+docker push cismet/cids-distribution-cache:1.1

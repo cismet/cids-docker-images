@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t cismet/cids-distribution-scaffold:latest -t cismet/cids-distribution-scaffold:1.0 .
+docker build -t cismet/cids-distribution-scaffold:latest -t cismet/cids-distribution-scaffold:1.1 .
