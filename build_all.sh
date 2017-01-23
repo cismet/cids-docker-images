@@ -1,6 +1,9 @@
 #!/bin/bash
 
-docker build -t cismet/cids-integration-base:latest cids-integration-base
-docker build -t cismet/cids-java-maven:latest cids-java-maven
-docker build -t cismet/cids-server:latest cids-server
-docker build -t cismet/cids-server-rest-legacy:latest cids-server-rest-legacy
+cids-integration-base/build.sh
+cids-java-maven/build.sh
+cids-server/build.sh
+cids-server-rest-legacy/build.sh
+cids-distribution/build.sh
+cids-distribution-cache/build.sh
+cids-distribution-scaffold/build.sh

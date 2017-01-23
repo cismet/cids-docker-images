@@ -165,7 +165,7 @@ In addition to environment variables  from  [cids-java-maven](#cids-java-maven):
 
 - **LOG4J_HOST** target host for log4j remote logging. If not provided, the ip of docker host is used. Not relevant, if remote logging is disabled in log4j.properties 
 
-- **CIDS_SERVER_STARTER:** name of the cids server starter JAR file (default: cids-server-2.0-SNAPSHOT-starter.jar), only relevant for custom distributions. 
+- **CIDS_SERVER_STARTER:** name of the cids server starter JAR file (default: cids-server-4.0-starter.jar), only relevant for custom distributions. 
 
 - **CIDS_SERVER_START_OPTIONS** optional arguments that are passed to CIDS_SERVER_STARTER
 
