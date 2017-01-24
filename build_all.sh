@@ -1,9 +1,9 @@
 #!/bin/bash
 
-cids-integration-base/build.sh
-cids-java-maven/build.sh
-cids-server/build.sh
-cids-server-rest-legacy/build.sh
-cids-distribution/build.sh
-cids-distribution-cache/build.sh
-cids-distribution-scaffold/build.sh
+(cd cids-integration-base && exec ./build.sh)
+(cd cids-java-maven && exec ./build.sh)
+(cd cids-server && exec ./build.sh)
+(cd cids-server-rest-legacy && exec ./build.sh)
+(cd cids-distribution && exec ./build.sh)
+(cd cids-distribution-cache && exec ./build.sh)
+(cd cids-distribution-scaffold && exec ./build.sh)
