@@ -3,9 +3,9 @@ FROM ubuntu:trusty
 MAINTAINER Jean-Michel Ruiz "jean.ruiz@cismet.de"
 
 LABEL de.cismet.cids.integration.base.name="cids-integration-base PostgeSQL image" \
-      de.cismet.cids.integration.base.version="postgres-9.6.1-2.0" \
-      de.cismet.cids.integration.base.tag.docker="postgres-9.6.1-2.0" \
-      de.cismet.cids.integration.base.tag.git="postgres-9.6.1-2.0" \
+      de.cismet.cids.integration.base.version="postgres-9.6.1-2.1-SNAPSHOT" \
+      de.cismet.cids.integration.base.tag.docker="postgres-9.6.1-2.1-SNAPSHOT" \
+      de.cismet.cids.integration.base.tag.git="postgres-9.6.1-2.1-SNAPSHOT" \
       de.cismet.cids.integration.base.descripton="PostgeSQL Runtime Image v2" 
 
 # ENV
