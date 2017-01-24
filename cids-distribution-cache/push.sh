@@ -7,5 +7,11 @@
 #docker images
 
 docker login
-docker push cismet/cids-distribution-cache:latest
-docker push cismet/cids-distribution-cache:1.1
+
+# PUSH RELEASE BUILD -----------------------------------------------------------
+#docker push cismet/cids-distribution-cache:latest
+#docker push cismet/cids-distribution-cache:4.0
+
+# PUSH SNAPSHOT BUILD ----------------------------------------------------------
+docker push cismet/cids-distribution-cache:latest-snapshot
+docker push cismet/cids-distribution-cache:4.1-SNAPSHOT
