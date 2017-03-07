@@ -32,7 +32,7 @@ case "$1" in
 	    
             if [ "$?" -ne 0 ]; then
 		echo -e "\e[31mERROR\e[39m: \e[1m$SERVICE\e[0m could not be stopped, trying to kill service"
-		kill -9 ` cat "$PID_FILE"`
+		kill -9 `cat "$PID_FILE"`
 		#kill -9  `ps -e -o pid,cmd,args|grep 'D'${CIDS_ACCOUNT_EXTENSION}|grep registry|cut -f 1 --delimiter=" "`
             fi
 

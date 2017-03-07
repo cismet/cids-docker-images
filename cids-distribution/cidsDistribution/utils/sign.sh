@@ -1,13 +1,15 @@
 #!/bin/bash
 
 if [[ -z $1 || -z $2 || -z $3 ]] ; then
-    echo -e "\e[31mERROR\e[39m: Usage: $0 {KEYSTORE} {STOREPASS} {JARFILE}"
+    echo -e "\e[31mERROR\e[39m: Usage: $0 {KEYSTORE} {STOREPASS} {JARFILE} {TSA}"
     exit 1
 fi
 
 KEYSTORE=$1
 STOREPASS=$2
-JARFILE=$3
+TSA=$3
+JARFILE=$4
+
 
 umask 0000
 
@@ -35,10 +37,11 @@ else
     # ignore warnings about duplicate attributes
     jar -ufm $JARFILE MANIFEST.TXT 2> /dev/null
     
-    jarsigner -tsa http://sha256timestamp.ws.symantec.com/sha256/timestamp -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet
-
-    # faster without tsa
-    #jarsigner -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet
+    if [[ -z $TSA ]] ; then
+        jarsigner -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet
+    else
+        jarsigner -tsa $TSA -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet
+    fi
 
     rm -f MANIFEST.TXT 2>> /dev/null
 fi
