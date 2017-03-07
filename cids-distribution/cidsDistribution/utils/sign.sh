@@ -44,4 +44,9 @@ else
     fi
 
     rm -f MANIFEST.TXT 2>> /dev/null
+
+    jarsigner_output=$(jarsigner -strict -verify -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet)
+    if [[ $? -eq 0 && $jarsigner_output != *"jar verified."* ]]; then
+        echo -e "\e[31mERROR\e[39m: \e[1m$JARFILE\e[0m could not be signed with cismet certificate!"
+    fi
 fi

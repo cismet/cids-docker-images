@@ -48,11 +48,11 @@ if [[ ! -f ${SIGNED_LIB_DIR}/.signed ]]; then
 fi
 
 # keystore deleted in image after build!
-if [[ -f KEYSTORE && STOREPASS ]]; then
+if [[ -f $KEYSTORE && $STOREPASS ]]; then
     last_modified=$(stat -c %y "${SIGNED_LIB_DIR}/.signed")
     echo -e "\e[32mINFO\e[39m: Checking signatures of all JAR Files in \e[1m${SIGNED_LIB_DIR}\e[0m that have been modified since $last_modified"
-    find -L ${SIGNED_LIB_DIR} -name *.jar -type f -newermm ${SIGNED_LIB_DIR}/.signed
-    find -L ${SIGNED_LIB_DIR} -name *.jar -type f -newermm ${SIGNED_LIB_DIR}/.signed -exec ./sign.sh $KEYSTORE $STOREPASS $TSA {} \;
+    find -L ${SIGNED_LIB_DIR} -name '*.jar' -type f -newermm ${SIGNED_LIB_DIR}/.signed
+    find -L ${SIGNED_LIB_DIR} -name '*.jar' -type f -newermm ${SIGNED_LIB_DIR}/.signed -exec ./sign.sh $KEYSTORE $STOREPASS $TSA {} \;
     touch ${SIGNED_LIB_DIR}/.signed
 else
     echo -e "\e[31mERROR\e[39m: Could not check signatures of all JAR files in \e[1m${SIGNED_LIB_DIR}\e[0m, keystore not available"
