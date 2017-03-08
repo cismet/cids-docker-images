@@ -43,9 +43,9 @@ fi
 umask 0000
 
 # sign only files that have been modified after last call to sign_all!
-#if [[ ! -f ${SIGNED_LIB_DIR}/.signed ]]; then
+if [[ ! -f ${SIGNED_LIB_DIR}/.signed ]]; then
     touch -t 197001010000.00 ${SIGNED_LIB_DIR}/.signed 
-#fi
+fi
 
 # keystore deleted in image after build!
 if [[ -f $KEYSTORE && $STOREPASS ]]; then
