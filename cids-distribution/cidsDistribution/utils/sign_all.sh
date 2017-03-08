@@ -43,9 +43,9 @@ fi
 umask 0000
 
 # sign only files that have been modified after last call to sign_all!
-if [[ ! -f ${SIGNED_LIB_DIR}/.signed ]]; then
+#if [[ ! -f ${SIGNED_LIB_DIR}/.signed ]]; then
     touch -t 197001010000.00 ${SIGNED_LIB_DIR}/.signed 
-fi
+#fi
 
 # keystore deleted in image after build!
 if [[ -f $KEYSTORE && $STOREPASS ]]; then
@@ -53,7 +53,16 @@ if [[ -f $KEYSTORE && $STOREPASS ]]; then
     echo -e "\e[32mINFO\e[39m: Checking signatures of all JAR Files in \e[1m${SIGNED_LIB_DIR}\e[0m that have been modified since $last_modified"
     find -L ${SIGNED_LIB_DIR} -name '*.jar' -type f -newermm ${SIGNED_LIB_DIR}/.signed
     find -L ${SIGNED_LIB_DIR} -name '*.jar' -type f -newermm ${SIGNED_LIB_DIR}/.signed -exec ./sign.sh $KEYSTORE $STOREPASS $TSA {} \;
-    touch ${SIGNED_LIB_DIR}/.signed
+    
+    # find does not fail if exec fails! :-(
+    if [[ -f ${SIGNED_LIB_DIR}/.failed ]]; then
+        echo -e "\e[33mWARNING\e[39m: One or more JARS in \e[1m${SIGNED_LIB_DIR}\e[0m could not be signed!"
+        rm -f ${SIGNED_LIB_DIR}/.failed 2>> /dev/null
+        rm -f ${SIGNED_LIB_DIR}/.signed 2>> /dev/null
+    else
+        echo -e "\e[32mINFO\e[39m: All JARS in \e[1m${SIGNED_LIB_DIR}\e[0m signed successfully!"
+        touch ${SIGNED_LIB_DIR}/.signed
+    fi
 else
     echo -e "\e[31mERROR\e[39m: Could not check signatures of all JAR files in \e[1m${SIGNED_LIB_DIR}\e[0m, keystore not available"
     # hard fail

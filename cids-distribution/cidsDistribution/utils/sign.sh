@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ -z $1 || -z $2 || -z $3 ]] ; then
-    echo -e "\e[31mERROR\e[39m: Usage: $0 {KEYSTORE} {STOREPASS} {JARFILE} {TSA}"
+if [[ -z $1 || -z $2 || -z $3 || -z $4 ]] ; then
+    echo -e "\e[31mERROR\e[39m: Usage: $0 {KEYSTORE} {STOREPASS} {TSA} {JARFILE}"
     exit 1
 fi
 
@@ -10,8 +10,10 @@ STOREPASS=$2
 TSA=$3
 JARFILE=$4
 
-
 umask 0000
+
+# set failed flag (find sign_all.sh does not fail if exex sign.sh fails! °-)
+touch ${JARFILE%/*}/.failed
 
 jarsigner_output=$(jarsigner -strict -verify -keystore $KEYSTORE -storepass $STOREPASS $JARFILE cismet)
 if [[ $? -eq 0 && $jarsigner_output != *"jar is unsigned."* && $jarsigner_output != *"no manifest."* ]]; then
@@ -49,4 +51,11 @@ else
     if [[ $? -eq 0 && $jarsigner_output != *"jar verified."* ]]; then
         echo -e "\e[31mERROR\e[39m: \e[1m$JARFILE\e[0m could not be signed with cismet certificate!"
     fi
+
+    zip -T $JARFILE
+    if [[ ! $? -eq 0 ]]; then
+        echo -e "\e[31mERROR\e[39m: \e[1m$JARFILE\e[0m is corrupted!"
+    fi
 fi
+
+rm -f ${JARFILE%/*}/.failed 2>> /dev/null
