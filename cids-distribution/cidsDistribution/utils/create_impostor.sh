@@ -9,6 +9,8 @@ SERVICE_DIR=$1
 STARTER_JAR=$2
 SERVICE=$3
 
+
+
 umask 0000
 
 mkdir -p .impostor.tmp
@@ -19,7 +21,10 @@ MAIN_CLASS=$(sed -ne '/^Main-Class:/,/Class-Path:/ p' META-INF/MANIFEST.MF | sed
 rm META-INF/*
 echo -e "\e[32mINFO\e[39m: creating impostor \e[1m$SERVICE\e[0m for $STARTER_JAR with main class $MAIN_CLASS"
 printf "$MAIN_CLASS\n" > MANIFEST.TXT
-printf "Class-Path: ${CIDS_STARTER_DIR}/$STARTER_JAR\n">> MANIFEST.TXT
+#printf "Class-Path: ${CIDS_STARTER_DIR}/$STARTER_JAR\n">> MANIFEST.TXT
+RELATIVE_CIDS_STARTER_DIR=`realpath --relative-to=$SERVICE_DIR $CIDS_STARTER_DIR`
+echo $RELATIVE_CIDS_STARTER_DIR 
+printf "Class-Path: $RELATIVE_CIDS_STARTER_DIR/$STARTER_JAR\n">> MANIFEST.TXT
 jar -cfm $SERVICE MANIFEST.TXT -C META-INF .
 mv $SERVICE $SERVICE_DIR/$SERVICE
 cd ..
