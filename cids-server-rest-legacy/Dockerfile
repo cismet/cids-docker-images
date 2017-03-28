@@ -10,7 +10,8 @@ LABEL de.cismet.cids.server.rest.legacy.name="cids server rest legacy runtime im
 
 ENV CIDS_SERVER_REST_LEGACY_IMPORT_DIR ${IMPORT_DIR}/cids-server-rest-legacy
 ENV CIDS_SERVER_REST_LEGACY_DIR ${DATA_DIR}/cids-server-rest-legacy
-ENV CIDS_SERVER_REST_LEGACY_STARTER cids-server-rest-legacy-starter
+# NOTE: -starter.jar will be appended by build and start scripts!
+ENV CIDS_SERVER_REST_LEGACY_STARTER cids-server-rest-legacy
 
 RUN mkdir -p ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}
 RUN mkdir -p ${CIDS_SERVER_REST_LEGACY_DIR}

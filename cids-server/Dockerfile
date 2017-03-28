@@ -11,7 +11,8 @@ LABEL de.cismet.cids.server.name="server runtime image" \
 ENV PGPASSWORD postgres
 ENV CIDS_SERVER_IMPORT_DIR ${IMPORT_DIR}/cids-server
 ENV CIDS_SERVER_DIR ${DATA_DIR}/cids-server
-ENV CIDS_SERVER_STARTER cids-server-starter
+# NOTE: -starter.jar will be appended by build and start scripts!
+ENV CIDS_SERVER_STARTER cids-server
 
 RUN mkdir -p ${CIDS_SERVER_IMPORT_DIR}
 RUN mkdir -p ${CIDS_SERVER_DIR}
