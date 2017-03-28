@@ -2,9 +2,9 @@ FROM ubuntu:trusty
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
 LABEL de.cismet.cids.java.maven.name="cids-java-maven runtime image" \
-      de.cismet.cids.java.maven.version="jdk-1.8u121-1.0-SNAPSHOT" \
-      de.cismet.cids.java.maven.tag.docker="jdk-1.8u121-1.0-SNAPSHOT" \
-      de.cismet.cids.java.maven.tag.git="jdk-1.8u121-1.0-SNAPSHOT" \
+      de.cismet.cids.java.maven.version="jdk-1.8u121-1.0" \
+      de.cismet.cids.java.maven.tag.docker="jdk-1.8u121-1.0" \
+      de.cismet.cids.java.maven.tag.git="jdk-1.8u121-1.0" \
       de.cismet.cids.java.maven.descripton="Java and Maven Runtime Image" 
 
 # keep DATA_DIR for backwards compatilibity with cids-server-* images
