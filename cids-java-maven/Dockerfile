@@ -2,9 +2,9 @@ FROM ubuntu:trusty
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
 LABEL de.cismet.cids.java.maven.name="cids-java-maven runtime image" \
-      de.cismet.cids.java.maven.version="jdk-1.8u112-1.2-SNAPSHOT" \
-      de.cismet.cids.java.maven.tag.docker="jdk-1.8u112-1.2-SNAPSHOT" \
-      de.cismet.cids.java.maven.tag.git="jdk-1.8u112-1.2-SNAPSHOT" \
+      de.cismet.cids.java.maven.version="jdk-1.8u121-1.0-SNAPSHOT" \
+      de.cismet.cids.java.maven.tag.docker="jdk-1.8u121-1.0-SNAPSHOT" \
+      de.cismet.cids.java.maven.tag.git="jdk-1.8u121-1.0-SNAPSHOT" \
       de.cismet.cids.java.maven.descripton="Java and Maven Runtime Image" 
 
 # keep DATA_DIR for backwards compatilibity with cids-server-* images
@@ -13,9 +13,9 @@ ENV LIB_DIR ${DATA_DIR}/lib
 ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
 ENV MAVEN_OPTS -XX:-OmitStackTraceInFastThrow -server -Xms512m -Xmx1024m
 ENV JAVA_VERSION 8
-ENV JAVA_UPDATE 112
-ENV JAVA_BUILD 15
-ENV OPENSSL_VERSION 1.1.0c
+ENV JAVA_UPDATE 121
+ENV JAVA_BUILD 13
+ENV OPENSSL_VERSION 1.1.0e
 ENV MAVEN_VERSION 3.3.9
 ENV JAVA_HOME /usr/lib/jvm/java-${JAVA_VERSION}-oracle
 ENV JRE_HOME ${JAVA_HOME}/jre
