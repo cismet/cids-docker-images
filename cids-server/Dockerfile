@@ -1,17 +1,18 @@
-FROM cismet/cids-java-maven:jdk-1.8u112-1.1
+FROM cismet/cids-java-maven:jdk-1.8u121-1.0
 
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
 LABEL de.cismet.cids.server.name="server runtime image" \
-      de.cismet.cids.server.version="4.1-SNAPSHOT" \
-      de.cismet.cids.server.tag.docker="4.1-SNAPSHOT" \
-      de.cismet.cids.server.tag.git="cidsServer-4.1-SNAPSHOT" \
+      de.cismet.cids.server.version="5.0" \
+      de.cismet.cids.server.tag.docker="5.0" \
+      de.cismet.cids.server.tag.git="cidsServer-5.0" \
       de.cismet.cids.server.descripton="Generic cids-server Runtime Image for local testing and integration tests" 
 
 ENV PGPASSWORD postgres
 ENV CIDS_SERVER_IMPORT_DIR ${IMPORT_DIR}/cids-server
 ENV CIDS_SERVER_DIR ${DATA_DIR}/cids-server
-ENV CIDS_SERVER_STARTER cids-server-4.0-starter.jar
+# NOTE: -starter.jar will be appended by build and start scripts!
+ENV CIDS_SERVER_STARTER cids-server
 
 RUN mkdir -p ${CIDS_SERVER_IMPORT_DIR}
 RUN mkdir -p ${CIDS_SERVER_DIR}

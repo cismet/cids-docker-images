@@ -17,9 +17,9 @@ cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/
 sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" ${DATA_DIR}/settings.xml
 cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/
 cd ${CIDS_SERVER_DIR}/
-sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION:-CidsReference}#g" pom.xml
-sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" pom.xml
-sed -i -- "s#__DATA_DIR__#${DATA_DIR:-/data/}#g" pom.xml
+#sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION:-CidsReference}#g" pom.xml
+#sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" pom.xml
+#sed -i -- "s#__DATA_DIR__#${DATA_DIR:-/data/}#g" pom.xml
 mvn -Djavax.net.ssl.trustStorePassword=changeit -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package ${UPDATE_SNAPSHOTS}
 echo '###### CHECKING CONNECTION TO CIDS INTEGRATION BASE ######'
 is_ready() {
@@ -45,7 +45,7 @@ cp ${CIDS_SERVER_IMPORT_DIR}/log4j.properties ${CIDS_SERVER_DIR}/
 sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${CIDS_SERVER_DIR}/log4j.properties
 sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${CIDS_SERVER_DIR}/log4j.properties
 
-CMD="java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=file:${CIDS_SERVER_DIR}/log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/${CIDS_SERVER_STARTER:-cids-server-4.0-starter.jar}"
+CMD="java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=file:${CIDS_SERVER_DIR}/log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/${CIDS_SERVER_STARTER:-cids-server}-starter.jar"
 if [ ! -z "${CIDS_SERVER_START_OPTIONS}" ]; then
     CMD="$CMD ${CIDS_SERVER_START_OPTIONS}"
 fi 
