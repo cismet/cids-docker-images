@@ -58,10 +58,13 @@ ${CIDS_DISTRIBUTION_DIR}/utils/update_configuration.sh
 
 echo -e "\e[32mINFO\e[39m: ###### UPDATING CLIENT CONFIGURATION ######"
 # copy JNLP generated when image was built to the client dir on the host-mounted volume!
+#
+# This behaviour is currently inconsitent with cids auto distribution (cids-maven-plugin v5.0). 
+# See https://github.com/cismet/cids-docker-images/issues/15
 umask 0000
 
 if [[ -d ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,} ]]; then
-    # Autodistibution: subdir ${CIDS_ACCOUNT_EXTENSION,,} below client dir
+    # Autodistibution: subdir ${CIDS_ACCOUNT_EXTENSION,,} below client dir (,, -> lowercase!)
     echo -e "\e[32mINFO\e[39m: Copy JNLP files to host mounted volume ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,}/"
     find ${CIDS_LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/ -name "*.jnlp" -type f -exec cp {} ${CIDS_CLIENT_DIR}/${CIDS_ACCOUNT_EXTENSION,,}/ \;
 else
