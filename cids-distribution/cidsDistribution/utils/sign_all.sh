@@ -24,7 +24,7 @@ fi
 if [[ -z $3 ]] ; then
     KEYSTORE_PWD=${CIDS_DISTRIBUTION_DIR}/.private/keystore.pwd
     if [[ -f $KEYSTORE && $KEYSTORE_PWD ]]; then
-        STOREPASS = `cat ${CIDS_DISTRIBUTION_DIR}/.private/keystore.pwd`
+        STOREPASS=`cat ${CIDS_DISTRIBUTION_DIR}/.private/keystore.pwd`
     else
         echo -e "\e[31mERROR\e[39m: Could not check signatures of all JAR files in \e[1m${SIGNED_LIB_DIR}\e[0m, keystore.pwd not available"
         # hard fail
