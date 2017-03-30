@@ -49,11 +49,11 @@ elif [[ -f ${CIDS_DISTRIBUTION_DIR}/.private/keystore && ${CIDS_DISTRIBUTION_DIR
     printf "\n" >> MANIFEST.TXT
 
     jar -cfm ${JNLP_BASE}_security.jar MANIFEST.TXT JNLP-INF
-    ${CIDS_DISTRIBUTION_DIR}/utils/sign.sh ${CIDS_DISTRIBUTION_DIR}/.private/keystore `cat ${CIDS_DISTRIBUTION_DIR}/.private/keystore.pwd` ${JNLP_BASE}_security.jar
-
+    
     # copy security jar to classpath directory of the image
     mkdir -p ${CIDS_LIB_DIR}/classpath${CIDS_ACCOUNT_EXTENSION} 2> /dev/null
     mv ${JNLP_BASE}_security.jar ${CIDS_LIB_DIR}/classpath${CIDS_ACCOUNT_EXTENSION}/
+    ${CIDS_DISTRIBUTION_DIR}/utils/sign.sh ${CIDS_DISTRIBUTION_DIR}/.private/keystore `cat ${CIDS_DISTRIBUTION_DIR}/.private/keystore.pwd` "http://dse200.ncipher.com/TSS/HttpTspServer" ${CIDS_LIB_DIR}/classpath${CIDS_ACCOUNT_EXTENSION}/${JNLP_BASE}_security.jar
     echo -e "\e[32mINFO\e[39m: ${JNLP_BASE}_security.jar copied to ${CIDS_LIB_DIR}/classpath${CIDS_ACCOUNT_EXTENSION}/"
 
     # copy JNLP to starter directory of the image 

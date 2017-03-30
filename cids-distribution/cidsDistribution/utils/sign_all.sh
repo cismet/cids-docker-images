@@ -35,9 +35,9 @@ else
 fi
 
 if [[ -z $4 ]] ; then
-    TSA=${CIDS_DISTRIBUTION_DIR}/.private/keystore
-else
     TSA="http://dse200.ncipher.com/TSS/HttpTspServer"
+else
+    TSA=$4
 fi
 
 umask 0000
@@ -52,7 +52,7 @@ if [[ -f $KEYSTORE && $STOREPASS ]]; then
     last_modified=$(stat -c %y "${SIGNED_LIB_DIR}/.signed")
     echo -e "\e[32mINFO\e[39m: Checking signatures of all JAR Files in \e[1m${SIGNED_LIB_DIR}\e[0m that have been modified since $last_modified"
     find -L ${SIGNED_LIB_DIR} -name '*.jar' -type f -newermm ${SIGNED_LIB_DIR}/.signed
-    find -L ${SIGNED_LIB_DIR} -name '*.jar' -type f -newermm ${SIGNED_LIB_DIR}/.signed -exec ./sign.sh $KEYSTORE $STOREPASS $TSA {} \;
+    find -L ${SIGNED_LIB_DIR} -name '*.jar' -type f -newermm ${SIGNED_LIB_DIR}/.signed -exec ${BASH_SOURCE%/*}/sign.sh $KEYSTORE $STOREPASS $TSA {} \;
     
     # find does not fail if exec fails! :-(
     if [[ -f ${SIGNED_LIB_DIR}/.failed ]]; then

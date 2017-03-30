@@ -10,6 +10,8 @@ STOREPASS=$2
 TSA=$3
 JARFILE=$4
 
+#echo -e "\e[32mINFO\e[39m: Signing \e[1m$JARFILE\e[0m with cismet certificate"
+
 umask 0000
 
 # set failed flag (find sign_all.sh does not fail if exex sign.sh fails! °-)
