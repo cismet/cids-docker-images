@@ -17,6 +17,7 @@ cp ${CIDS_SERVER_IMPORT_DIR}/settings.xml ${DATA_DIR}/
 sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" ${DATA_DIR}/settings.xml
 cp ${CIDS_SERVER_IMPORT_DIR}/pom.xml ${CIDS_SERVER_DIR}/
 cd ${CIDS_SERVER_DIR}/
+touch _cids-distribution
 #sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION:-CidsReference}#g" pom.xml
 #sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" pom.xml
 #sed -i -- "s#__DATA_DIR__#${DATA_DIR:-/data/}#g" pom.xml
