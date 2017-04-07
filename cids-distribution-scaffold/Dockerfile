@@ -1,4 +1,4 @@
-FROM cismet/cids-distribution:4.0
+FROM cismet/cids-distribution:5.0
 
 MAINTAINER Pascal Dihé <pascal.dihe@cismet.de>
 
