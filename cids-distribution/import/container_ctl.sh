@@ -5,7 +5,7 @@ function finish {
     ${CIDS_DISTRIBUTION_DIR}/cids_ctl.sh stop
     echo -e "\e[32mINFO\e[39m: cids services stopped"
     
-    if [[ -z ${CIDSCTL_START_WEBSERVER} && "${CIDSCTL_START_WEBSERVER}" = "true" ]]; then
+    if [[ "${CIDSCTL_START_WEBSERVER}" = "true" ]]; then
         echo -e "\e[32mINFO\e[39m: stopping nginx"
         service nginx stop
         echo -e "\e[32mINFO\e[39m: nginx stopped"
@@ -28,7 +28,7 @@ function is_ready {
 trap finish HUP INT QUIT TERM SIGUSR1
 
 
-if [[ -z ${CIDSCTL_CHECK_DATABASE_CONNECTION} && "${CIDSCTL_CHECK_DATABASE_CONNECTION}" = "true" ]]; then
+if [[ "${CIDSCTL_CHECK_DATABASE_CONNECTION}" = "true" ]]; then
     # FIXME!
     # Environment variables are no longer the recommended method for connecting to linked services. 
     # Instead, you should use the link name (by default, the name of the linked service) as the hostname to connect to. 
@@ -36,7 +36,7 @@ if [[ -z ${CIDSCTL_CHECK_DATABASE_CONNECTION} && "${CIDSCTL_CHECK_DATABASE_CONNE
     # Environment variables will only be populated if you’re using the legacy version 1 Compose file format.
     echo -e "\e[32mINFO\e[39m: ###### CHECKING CIDS INTEGRATION BASE CONTAINER ######"
     if test -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}" -o -z "${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT}"; then
-        echo -e "\e[33mWARN\e[39m: Container not linked with PostgreSQL container cids-integration-base"
+        echo -e "\e[33mERROR\e[39m: Container not linked with PostgreSQL container cids-integration-base"
     else
         echo -e "\e[32mINFO\e[39m: container linked with PostgreSQL container cids-integration-base (${CIDS_INTEGRATION_BASE_PORT_5432_TCP_ADDR}:${CIDS_INTEGRATION_BASE_PORT_5432_TCP_PORT})"
         i=0
@@ -51,6 +51,8 @@ if [[ -z ${CIDSCTL_CHECK_DATABASE_CONNECTION} && "${CIDSCTL_CHECK_DATABASE_CONNE
             sleep 15
         done
     fi
+else
+	echo -e "\e[33mWARN\e[39m: Container not linked with PostgreSQL container cids-integration-base. CIDSCTL_CHECK_DATABASE_CONNECTION=${CIDSCTL_CHECK_DATABASE_CONNECTION}"
 fi
 
 echo -e "\e[32mINFO\e[39m: ###### UPDATING SERVER CONFIGURATION ######"
@@ -87,7 +89,7 @@ echo -e "\e[32mINFO\e[39m: ###### STARTING SERVICES ######"
 echo -e "\e[32mINFO\e[39m: starting cids services"
 ${CIDS_DISTRIBUTION_DIR}/cids_ctl.sh start
 
-if [[ -z ${CIDSCTL_START_WEBSERVER} && "${CIDSCTL_START_WEBSERVER}" = "true" ]]; then
+if [[ "${CIDSCTL_START_WEBSERVER}" = "true" ]]; then
     echo -e "\e[32mINFO\e[39m: starting nginx"
     sed -i -- "s#__CIDS_DISTRIBUTION_DIR__#${CIDS_DISTRIBUTION_DIR:-/cidsDistribution}#g" /etc/nginx/sites-available/default
     service nginx start
