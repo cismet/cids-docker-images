@@ -32,7 +32,7 @@ case "$1" in
 	    
             if [ "$?" -ne 0 ]; then
 		echo -e "\e[31mERROR\e[39m: \e[1m$SERVICE\e[0m could not be stopped, trying to kill service"
-		kill -9 ` cat "$PID_FILE"`
+		kill -9 `cat "$PID_FILE"`
 		#kill -9  `ps -e -o pid,cmd,args|grep 'D'${CIDS_ACCOUNT_EXTENSION}|grep registry|cut -f 1 --delimiter=" "`
             fi
 
@@ -73,20 +73,25 @@ case "$1" in
             PID=$!
 
             if [ "$RESULT" -ne 0 ]; then
-                echo -e "\e[31mERROR\e[39m: \e[1m$SERVICE\e[0m could not be started"
+                echo -e "\e[31mERROR\e[39m: \e[1m$SERVICE\e[0m could not be started: $RESULT"
                 # exit 1
             else
                 sleep 3
                 ps $PID | grep -q "$CMD"
+                
+                if [ "$?" -ne 0 ]; then
+                    echo -e "\e[33mWARN\e[39m: \e[1m$SERVICE\e[0m: 'ps' not successfull for PID $PID, trying 'jps'!"
+                    jps | grep -q "$SERVICE"
+                fi
 
                 if [ "$?" -ne 0 ]; then
-                    echo -e "\e[31mERROR\e[39m: \e[1m$SERVICE\e[0m failed during start"
+                    echo -e "\e[31mERROR\e[39m: \e[1m$SERVICE\e[0m failed during start: $?"
                     # exit 1
                 else
                     echo $! > "$PID_FILE"
                     chmod g+w "$OUT_FILE"
                     chmod g+w "$PID_FILE"
-                    echo -e "\e[32mINFO\e[39m: \e[1m$SERVICE\e[0m running"
+                    echo -e "\e[32mINFO\e[39m: \e[1m$SERVICE\e[0m running ($PID)"
 
                     if [ -x startup_hook.sh ]; then
                         echo -e "\e[32mINFO\e[39m: running \e[1m$SERVICE\e[0m startup hook"

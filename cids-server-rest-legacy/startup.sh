@@ -15,9 +15,10 @@ echo '###### BUILD CIDS-SERVER-REST-LEGACY DISTRIBUTION ######'
 mkdir -p ${CIDS_SERVER_REST_LEGACY_DIR}
 cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/pom.xml ${CIDS_SERVER_REST_LEGACY_DIR}/
 cd ${CIDS_SERVER_REST_LEGACY_DIR}/
-sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION:-CidsReference}#g" pom.xml
-sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" pom.xml
-sed -i -- "s#__DATA_DIR__#${DATA_DIR:-/data/}#g" pom.xml
+touch _cids-distribution
+#sed -i -- "s#__CIDS_ACCOUNT_EXTENSION__#${CIDS_ACCOUNT_EXTENSION:-CidsReference}#g" pom.xml
+#sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/data/lib/m2/}#g" pom.xml
+#sed -i -- "s#__DATA_DIR__#${DATA_DIR:-/data/}#g" pom.xml
 mvn  -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${DATA_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false $* clean package ${UPDATE_SNAPSHOTS}
 echo '###### START CIDS-SERVER-REST-LEGACY SERVER ######'
 echo -e '\e[32mINFO\e[39m: connecting to cids-server at '${CIDS_SERVER_PORT_9986_TCP_ADDR:-localhost}':'${CIDS_SERVER_PORT_9986_TCP_PORT:-9986}
@@ -27,4 +28,4 @@ sed -i -- "s/__CIDS_SERVER_PORT__/${CIDS_SERVER_PORT_9986_TCP_PORT:-9986}/g" ${C
 cp ${CIDS_SERVER_REST_LEGACY_IMPORT_DIR}/log4j.properties ${CIDS_SERVER_REST_LEGACY_DIR}/
 sed -i -- "s/__LOG4J_HOST__/${LOG4J_HOST:-localhost}/g" ${CIDS_SERVER_REST_LEGACY_DIR}/log4j.properties
 sed -i -- "s/__LOG4J_PORT__/${LOG4J_PORT:-4445}/g" ${CIDS_SERVER_REST_LEGACY_DIR}/log4j.properties
-/usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=file:${CIDS_SERVER_REST_LEGACY_DIR}/log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/${CIDS_SERVER_REST_LEGACY_STARTER:-cids-server-rest-legacy-4.0-starter.jar} @runtime.properties
+/usr/bin/java -server -Xms64m -Xmx800m -Djava.security.policy=${DATA_DIR}/policy.file -Dlog4j.configuration=file:${CIDS_SERVER_REST_LEGACY_DIR}/log4j.properties -jar ${LIB_DIR}/starter${CIDS_ACCOUNT_EXTENSION}/${CIDS_SERVER_REST_LEGACY_STARTER:-cids-server-rest-legacy}-starter.jar @runtime.properties
