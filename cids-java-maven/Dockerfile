@@ -2,9 +2,9 @@ FROM ubuntu:xenial
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
 LABEL de.cismet.cids.java.maven.name="cids-java-maven runtime image" \
-      de.cismet.cids.java.maven.version="jdk-1.8u121-2.0" \
-      de.cismet.cids.java.maven.tag.docker="jdk-1.8u121-2.0" \
-      de.cismet.cids.java.maven.tag.git="jdk-1.8u121-2.0" \
+      de.cismet.cids.java.maven.version="jdk-1.8u131-1.0" \
+      de.cismet.cids.java.maven.tag.docker="jdk-1.8u131-1.0" \
+      de.cismet.cids.java.maven.tag.git="jdk-1.8u131-1.0" \
       de.cismet.cids.java.maven.descripton="Java and Maven Runtime Image" 
 
 # keep DATA_DIR for backwards compatilibity with cids-server-* images
@@ -13,10 +13,10 @@ ENV LIB_DIR ${DATA_DIR}/lib
 ENV MAVEN_LIB_DIR ${LIB_DIR}/m2
 ENV MAVEN_OPTS -XX:-OmitStackTraceInFastThrow -server -Xms512m -Xmx1024m
 ENV JAVA_VERSION 8
-ENV JAVA_UPDATE 121
-ENV JAVA_BUILD 13
+ENV JAVA_UPDATE 131
+ENV JAVA_BUILD 11
 ENV OPENSSL_VERSION 1.1.0e
-ENV MAVEN_VERSION 3.3.9
+ENV MAVEN_VERSION 3.5.0
 ENV JAVA_HOME /usr/lib/jvm/java-${JAVA_VERSION}-oracle
 ENV JRE_HOME ${JAVA_HOME}/jre
 ENV MAVEN_HOME /usr/share/maven
@@ -29,12 +29,12 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get update \
-    && apt-get -y --no-install-recommends install ca-certificates curl gcc libc6-dev libssl-dev make openssl
+    && apt-get -y --no-install-recommends install ca-certificates curl wget gcc libc6-dev libssl-dev make openssl
 
 # ridiculous oracle download url
 # See https://gist.github.com/P7h/9741922
 RUN mkdir -p /usr/lib/jvm \
-    && curl --silent --location --retry 3 --cacert /etc/ssl/certs/GeoTrust_Global_CA.pem --header "Cookie: oraclelicense=accept-securebackup-cookie;" http://download.oracle.com/otn-pub/java/jdk/"${JAVA_VERSION}"u"${JAVA_UPDATE}"-b"${JAVA_BUILD}"/e9e7ea248e2c4826b92b3f075a80e441/server-jre-"${JAVA_VERSION}"u"${JAVA_UPDATE}"-linux-x64.tar.gz | tar xz -C /tmp \
+    && wget -c -qO- --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_BUILD}/d54c1d3a095b4ff2b6607d096fa80163/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" | tar xz -C /tmp \
     && mv /tmp/jdk1.${JAVA_VERSION}.0_${JAVA_UPDATE} "${JAVA_HOME}"
 
 RUN mkdir -p ${MAVEN_HOME} \
