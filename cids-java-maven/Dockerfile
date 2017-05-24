@@ -34,7 +34,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # ridiculous oracle download url
 # See https://gist.github.com/P7h/9741922
 RUN mkdir -p /usr/lib/jvm \
-    && wget -c -qO --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/"${JAVA_VERSION}"u"${JAVA_UPDATE}"-b"${JAVA_BUILD}"/d54c1d3a095b4ff2b6607d096fa80163/jdk-"${JAVA_VERSION}"u"${JAVA_UPDATE}"-linux-x64.tar.gz | tar xz -C /tmp \
+    && wget -c -qO- --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_BUILD}/d54c1d3a095b4ff2b6607d096fa80163/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" | tar xz -C /tmp \
     && mv /tmp/jdk1.${JAVA_VERSION}.0_${JAVA_UPDATE} "${JAVA_HOME}"
 
 RUN mkdir -p ${MAVEN_HOME} \
