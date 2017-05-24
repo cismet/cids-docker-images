@@ -1,4 +1,4 @@
-FROM cismet/cids-java-maven:jdk-1.8u121-2.0
+FROM cismet/cids-java-maven:jdk-1.8u131-1.0
 
 MAINTAINER Jean-Michel Ruiz <jean.ruiz@cismet.de>
 
