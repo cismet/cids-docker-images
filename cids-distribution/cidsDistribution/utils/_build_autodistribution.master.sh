@@ -28,7 +28,7 @@ if [[ -f ${CIDS_GENERATOR_DIR}/settings.xml ]]; then
                     #sed -i -- "s#__MAVEN_LIB_DIR__#${MAVEN_LIB_DIR:-/cidsDistribution/lib/m2/}#g" pom.xml
                     #sed -i -- "s#__DATA_DIR__#${CIDS_DISTRIBUTION_DIR:-/cidsDistribution/}#g" pom.xml
                     
-                    CMD="mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ${CIDS_GENERATOR_DIR}/settings.xml -Dcids.generate-lib.checkSignature=false -Dcids.generate-lib.sign=false ${MAVEN_BUID_COMMAND:-clean package} ${UPDATE_SNAPSHOTS}"
+                    CMD="mvn -s ${CIDS_GENERATOR_DIR}/settings.xml ${MAVEN_BUID_COMMAND:-clean install} ${UPDATE_SNAPSHOTS}"
                     echo -e "\e[32m$CMD\e[39m"
                     $CMD
                 else
